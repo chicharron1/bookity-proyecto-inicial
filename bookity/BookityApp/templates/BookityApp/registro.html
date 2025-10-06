@@ -1,6 +1,10 @@
 {% extends 'BookityApp/base.html' %}
 {% block content %}
 
+{% if mensaje_error %}
+    <p style="color: red;">{{ mensaje_error }}</p>
+{% endif %}
+
 <h1>Registrate en Bookity</h1>
 <form method="post">
     {% csrf_token %}

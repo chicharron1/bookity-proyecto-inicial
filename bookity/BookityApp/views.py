@@ -1,7 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, logout, login as auth_login
 
 def registro(request):
     mensaje_error = ''
@@ -29,3 +29,7 @@ def login(request):
         else:
             return render(request, 'BookityApp/login.html', {'form': form})
     return render(request, 'BookityApp/login.html', {'form': AuthenticationForm()})
+
+def cerrar(request):
+    logout(request)
+    return redirect('inicio')

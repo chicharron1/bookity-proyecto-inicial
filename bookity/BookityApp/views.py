@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.contrib.auth import authenticate, login as auth_login
 
 def registro(request):
     mensaje_error = ''
@@ -20,4 +20,12 @@ def inicio(request):
     return render(request, 'BookityApp/inicio.html')
 
 def login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            auth_login(request, user)
+            return render(request, 'BookityApp/inicio.html')
+        else:
+            return render(request, 'BookityApp/login.html', {'form': form})
     return render(request, 'BookityApp/login.html', {'form': AuthenticationForm()})

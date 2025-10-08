@@ -11,6 +11,7 @@
             <li><a href="\inicio">Inicio</a></li>
             <li><a href="\login">Iniciar Sesión</a></li>
             {% if user.is_authenticated %}
+            <li><a href="\publicar">Publicar Anuncio</a></li>
             <li><a href="\cerrar_sesion">Cerrar Sesión</a></li>
             {% endif %}
         </ul>

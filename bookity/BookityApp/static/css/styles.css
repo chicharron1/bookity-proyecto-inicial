@@ -1,0 +1,8 @@
+.barra_nav {
+    background-color: #adc178;
+    color: black;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

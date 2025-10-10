@@ -1,20 +1,24 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Bookity</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-    <nav>
-        <ul>
-            <li><a href="\registro">Registrarse</a></li>
-            <li><a href="\inicio">Inicio</a></li>
-            <li><a href="\login">Iniciar Sesión</a></li>
+    <nav class="barra_nav">
+        <div class="logo">
+            <a href="\inicio">Inicio</a>
+        </div>
+        <div class="enlaces">
+            <a href="\registro">Registrarse</a>
+            <a href="\login">Iniciar Sesión</a>
             {% if user.is_authenticated %}
-            <li><a href="\publicar">Publicar Anuncio</a></li>
-            <li><a href="\cerrar_sesion">Cerrar Sesión</a></li>
+                <a href="\publicar">Publicar Anuncio</a>
+                <a href="\cerrar_sesion">Cerrar Sesión</a>
             {% endif %}
-        </ul>
+        </div>
     </nav>
     {% block content %}
     {% endblock %}

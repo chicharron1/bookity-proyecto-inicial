@@ -1,17 +1,26 @@
+body {
+    padding-top: 70px;
+}
+
 .barra_nav {
     background-color: #adc178;
     color: rgb(0, 0, 0);
-    padding: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-family: "Sour Gummy", sans-serif;
-    
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 30px;
+    margin-bottom: 30px;
 }
 
 .barra_nav a {
     color: rgb(0, 0, 0);
     text-decoration: none;
-    margin: 0 10px;
+    margin: 0 13px;
     font-weight: bold;
 }   

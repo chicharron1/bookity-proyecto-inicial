@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login as auth_login
 from .forms import PublicacionForm
+from .models import Publicacion
 
 def registro(request):
     mensaje_error = ''
@@ -50,3 +51,7 @@ def publicar(request):
     else:
         form = PublicacionForm()
     return render(request, 'BookityApp/publicar.html', {'form': form})
+
+def ver_publicaciones(request):
+    publicaciones = Publicacion.objects.all().order_by('-fecha_publicacion')
+    return render(request, 'BookityApp/ver_publicaciones.html', {'publicaciones': publicaciones})

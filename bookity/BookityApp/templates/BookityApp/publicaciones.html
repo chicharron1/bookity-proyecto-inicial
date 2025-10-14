@@ -1,0 +1,18 @@
+{% extends 'BookityApp/base.html' %}
+{% block content %}
+<div class="contenedor-publicaciones">
+    <h1>Publicaciones</h1>
+    {% if publicaciones %}
+        {% for publicacion in publicaciones %}
+            <div class="publicacion">
+                <h2>{{ publicacion.titulo }}</h2>
+                <p><strong>Autor:</strong> {{ publicacion.user.username }}</p>
+                <p>{{ publicacion.descripcion }}</p>
+                <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No hay publicaciones todavía.</p>
+    {% endif %}
+</div>
+{% endblock %}

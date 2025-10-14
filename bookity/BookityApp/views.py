@@ -52,6 +52,8 @@ def publicar(request):
         form = PublicacionForm()
     return render(request, 'BookityApp/publicar.html', {'form': form})
 
-def ver_publicaciones(request):
+def publicaciones(request):
     publicaciones = Publicacion.objects.all().order_by('-fecha_publicacion')
-    return render(request, 'BookityApp/ver_publicaciones.html', {'publicaciones': publicaciones})
+    return render(request, 'BookityApp/publicaciones.html', {
+        'publicaciones': publicaciones
+    })

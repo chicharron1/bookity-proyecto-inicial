@@ -1,18 +1,46 @@
 {% extends 'BookityApp/base.html' %}
+{% load static %}
+
 {% block content %}
 <div class="contenedor-publicaciones">
-    <h1>Publicaciones</h1>
-    {% if publicaciones %}
-        {% for publicacion in publicaciones %}
-            <div class="publicacion">
-                <h2>{{ publicacion.titulo }}</h2>
-                <p><strong>Autor:</strong> {{ publicacion.user.username }}</p>
-                <p>{{ publicacion.descripcion }}</p>
-                <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>No hay publicaciones todavía.</p>
-    {% endif %}
+  <h1>Publicaciones</h1>
+  {% if publicaciones %}
+      {% for publicacion in publicaciones %}
+          <div class="publicacion">
+              <h2>{{ publicacion.titulo }}</h2>
+              <p><strong>Autor:</strong> {{ publicacion.user.username }}</p>
+              <p>{{ publicacion.descripcion }}</p>
+              <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
+          </div>
+      {% endfor %}
+  {% else %}
+      <p>No hay publicaciones todavía.</p>
+  {% endif %}
 </div>
+
+<h1>Mapa de publicaciones</h1>
+<div id="map" style="height: 500px; width: 100%;"></div>
+
+<!-- Script de Google Maps -->
+<script async
+  src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY&callback=initMap">
+</script>
+
+<script>
+  // Esta función se ejecuta cuando se carga el mapa
+  function initMap() {
+    const ubicacion = { lat: -33.4569, lng: -70.6483 }; // Santiago de Chile
+    const mapa = new google.maps.Map(document.getElementById("map"), {
+      zoom: 12,
+      center: ubicacion,
+    });
+
+    // Ejemplo de marcador
+    const marcador = new google.maps.Marker({
+      position: ubicacion,
+      map: mapa,
+      title: "Estamos aquí",
+    });
+  }
+</script>
 {% endblock %}

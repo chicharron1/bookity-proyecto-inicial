@@ -57,3 +57,9 @@ def publicaciones(request):
     return render(request, 'BookityApp/publicaciones.html', {
         'publicaciones': publicaciones
     })
+
+def perfil(request):
+    publicaciones = Publicacion.objects.filter(user=request.user).order_by('-fecha_publicacion')
+    return render(request, 'BookityApp/perfil.html', {
+        'publicaciones': publicaciones
+    })

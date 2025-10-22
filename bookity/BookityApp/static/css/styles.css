@@ -24,3 +24,13 @@ body {
     margin: 0 13px;
     font-weight: bold;
 }   
+.id_button {
+    color :rgb(0, 0, 0);
+    font-family: "Inder", sans-serif;
+}
+.id_titulo_prime {
+    font-family: "Sour Gummy", sans-serif;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 50px;
+}

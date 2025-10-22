@@ -2,12 +2,12 @@
 
 {% block content %}
 
-<h1>Iniciar Sesión en Bookity</h1>
+<h1 class="id_titulo_prime">Iniciar Sesión en Bookity</h1>
 
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Iniciar Sesión</button>
+    <button class = "id_button" type="submit">Iniciar Sesión</button>
 </form>
 
 {% endblock %}

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login as auth_login
@@ -63,3 +63,7 @@ def perfil(request):
     return render(request, 'BookityApp/perfil.html', {
         'publicaciones': publicaciones
     })
+
+def detalle(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion, id=publicacion_id)
+    return render(request, 'BookityApp/detalle.html', {'publicacion': publicacion})

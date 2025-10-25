@@ -9,8 +9,9 @@
           <div class="publicacion">
               <h2>{{ publicacion.titulo }}</h2>
               <p><strong>Autor:</strong> {{ publicacion.user.username }}</p>
-              <p>{{ publicacion.descripcion }}</p>
+              <p>{{ publicacion.descripcion|truncatechars:30 }}</p>
               <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
+              <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
           </div>
       {% endfor %}
   {% else %}

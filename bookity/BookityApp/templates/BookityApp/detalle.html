@@ -1,0 +1,24 @@
+{% extends 'BookityApp/base.html' %}
+{% block content %}
+<div>
+    <h1>{{ publicacion.titulo }}</h1>
+    <p>{{ publicacion.descripcion }}</p>
+    <p><strong>Contacto:</strong> {{ publicacion.contacto }}</p>
+    <p><strong>Tipo:</strong> {{ publicacion.tipo }}</p>
+    <p><strong>Ubicación:</strong> {{ publicacion.ubicacion }}</p>
+    <p><strong>Fecha de publicación:</strong> {{ publicacion.fecha_publicacion }}</p>
+    <div>
+        <h2>Comentarios</h2>
+        {% if publicacion.comentarios.all %}
+            {% for comentario in publicacion.comentarios.all %}
+                <div class="comentario">
+                    <p><strong>{{ comentario.user.username }}:</strong> {{ comentario.texto }}</p>
+                    <p><em>Publicado el {{ comentario.fecha_comentario }}</em></p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No hay comentarios aún.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

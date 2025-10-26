@@ -9,7 +9,22 @@
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    {{ perfil_form.as_p }}
+    <button type="button" id="boton_perfil_form">Agregar ubicación por defecto</button>
+    <div id="id_perfil_form" style="display: none;">
+        {{ perfil_form.as_p }}
+    </div>
     <button type="submit">Registrar</button>
 </form>
+
+<script>
+    const botonAgregarUbicacion= document.getElementById('boton_perfil_form');
+    const element_perfil_form = document.getElementById('id_perfil_form');
+    botonAgregarUbicacion.addEventListener('click', () => {
+        if(element_perfil_form.style.display === 'none'){
+          element_perfil_form.style.display = 'block';
+      } else {
+          element_perfil_form.style.display = 'none';
+      }
+  });
+</script>
 {% endblock %}

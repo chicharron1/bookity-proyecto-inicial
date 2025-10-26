@@ -18,9 +18,9 @@
             <a href="\inicio">Inicio</a>
         </div>
         <div class="enlaces">
-            <a href="\registro">Registrarse</a>
             <a href="\publicaciones">Ver Publicaciones</a>
             {% if not user.is_authenticated %}
+            <a href="\registro">Registrarse</a>
             <a href="\login">Iniciar Sesión</a>
             {% endif %}
             {% if user.is_authenticated %}

@@ -2,21 +2,26 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login as auth_login
-from .forms import PublicacionForm
-from .models import Publicacion
+from .forms import PublicacionForm, PerfilForm
+from .models import Publicacion, Perfil
 
 def registro(request):
     mensaje_error = ''
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
-        if form.is_valid():
+        perfil_form = PerfilForm(request.POST)
+        if form.is_valid() and perfil_form.is_valid():
             user = form.save()
-            return render(request, 'BookityApp/registro.html', {'form': UserCreationForm(), 'mensaje_error': ''})
+            perfil = perfil_form.save(commit=False)
+            perfil.user = user
+            perfil.save()
+            return render(request, 'BookityApp/registro.html', {'form': form, 'perfil_form': perfil_form, 'mensaje_error': ''})
         else:
             mensaje_error = "Inválido :("
     else:
         form = UserCreationForm()
-    return render(request, 'BookityApp/registro.html', {'form': form, 'mensaje_error': mensaje_error})
+        perfil_form = PerfilForm()
+    return render(request, 'BookityApp/registro.html', {'form': form, 'perfil_form': perfil_form, 'mensaje_error': mensaje_error})
 
 def inicio(request):
     return render(request, 'BookityApp/inicio.html')

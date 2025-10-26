@@ -1,6 +1,18 @@
 {% extends 'BookityApp/base.html' %}
 {% load static %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<style>
+  #map {
+    height: 500px;
+    width: 100%;
+    margin-top: 20px;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="contenedor-publicaciones">
   <h1>Publicaciones</h1>
@@ -18,30 +30,27 @@
       <p>No hay publicaciones todavía.</p>
   {% endif %}
 </div>
+{% endblock %}
 
+{% block extra_scripts %}
 <h1>Mapa de publicaciones</h1>
-<div id="map" style="height: 500px; width: 100%;"></div>
-
-<!-- Script de Google Maps -->
-<script async
-  src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY&callback=initMap">
-</script>
-
+<div id="map"></div>
 <script>
-  // Esta función se ejecuta cuando se carga el mapa
-  function initMap() {
-    const ubicacion = { lat: -33.4569, lng: -70.6483 }; // Santiago de Chile
-    const mapa = new google.maps.Map(document.getElementById("map"), {
-      zoom: 12,
-      center: ubicacion,
-    });
+  {% if user.perfil.longitud_defecto and user.perfil.latitud_defecto %}
+    var map = L.map('map').setView([{{ user.perfil.latitud_defecto }}, {{ user.perfil.longitud_defecto }}], 10);
+  {% else %}
+    var map = L.map('map').setView([0, 0], 10);
+  {% endif %}
 
-    // Ejemplo de marcador
-    const marcador = new google.maps.Marker({
-      position: ubicacion,
-      map: mapa,
-      title: "Estamos aquí",
-    });
-  }
+  L.tileLayer('https://api.maptiler.com/maps/streets-v2/256/{z}/{x}/{y}.png?key=EdWFsXtwOisU8uwq86cZ', {
+      maxZoom: 19,
+      attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'}).addTo(map);
+  {% if publicaciones %}
+    {% for publicacion in publicaciones %}
+      L.marker([{{ publicacion.latitud }}, {{ publicacion.longitud }}])
+      .addTo(map)
+      .bindPopup('<b>{{ publicacion.titulo }}</b><br>{{ publicacion.descripcion|truncatechars:65|escapejs }} <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>');
+    {% endfor %}
+  {% endif %}
 </script>
 {% endblock %}

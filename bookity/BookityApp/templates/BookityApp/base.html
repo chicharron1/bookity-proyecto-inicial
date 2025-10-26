@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inder&display=swap" rel="stylesheet">
+    {% block extra_head %}{% endblock %}
 </head>
 <body>
     <nav class="barra_nav">
@@ -30,6 +31,9 @@
         </div>
     </nav>
     {% block content %}
+    {% endblock %}
+
+    {% block extra_scripts %}
     {% endblock %}
 </body>
 </html>

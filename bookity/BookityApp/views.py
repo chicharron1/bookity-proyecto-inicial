@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login as auth_login
-from .forms import PublicacionForm, PerfilForm
-from .models import Publicacion, Perfil
+from .forms import PublicacionForm, PerfilForm, ComentarioForm
+from .models import Publicacion, Perfil, Comentario
+from django.contrib.auth.decorators import login_required
 
 def registro(request):
     contexto = {'titulo': 'Registrarse a Bookity'}
@@ -83,4 +84,23 @@ def perfil(request):
 
 def detalle(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion, id=publicacion_id)
-    return render(request, 'BookityApp/detalle.html', {'publicacion': publicacion})
+    comentario_form = ComentarioForm()
+    if request.method == 'POST':
+        comentario_form = ComentarioForm(request.POST)
+        if comentario_form.is_valid():
+            comentario = comentario_form.save(commit=False)
+            comentario.user = request.user
+            comentario.publicacion = publicacion
+            comentario.save()
+            return redirect('detalle', publicacion_id=publicacion.id)
+    else:
+        comentario_form = ComentarioForm()
+    return render(request, 'BookityApp/detalle.html', {'publicacion': publicacion, 'comentario_form': comentario_form})
+
+
+@login_required
+def eliminar_comentario(request, comentario_id):
+    comentario = get_object_or_404(Comentario, id=comentario_id, user=request.user)
+    publicacion_id = comentario.publicacion.id
+    comentario.delete()
+    return redirect('detalle', publicacion_id=publicacion_id)

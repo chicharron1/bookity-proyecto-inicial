@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Publicacion, Perfil
+from .models import Publicacion, Perfil, Comentario
 
 class PublicacionForm(forms.ModelForm):
     class Meta:
@@ -22,3 +22,7 @@ class PerfilForm(forms.ModelForm):
                 'placeholder': 'Ingresa la longitud'
             }),
         }
+class ComentarioForm(forms.ModelForm):
+    class Meta:
+        model = Comentario
+        fields = ['texto']

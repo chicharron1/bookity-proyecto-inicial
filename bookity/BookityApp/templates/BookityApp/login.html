@@ -1,13 +1,27 @@
 {% extends 'BookityApp/base.html' %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
 {% block content %}
 
 <h1 class="id_titulo_prime">Iniciar Sesión en Bookity</h1>
 
-<form method="post">
+<form method="post" class="login-form">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button class = "id_button" type="submit">Iniciar Sesión</button>
+
+    <div class="campo">
+        <label for="{{ form.username.id_for_label }}">Usuario</label>
+        {{ form.username }}
+    </div>
+
+    <div class="campo">
+        <label for="{{ form.password.id_for_label }}">Contraseña</label>
+        {{ form.password }}
+    </div>
+
+    <button type="submit" class="boton-login">Entrar</button>
 </form>
+
+
 
 {% endblock %}

@@ -6,6 +6,7 @@ from .forms import PublicacionForm, PerfilForm
 from .models import Publicacion, Perfil
 
 def registro(request):
+    contexto = {'titulo': 'Registrarse a Bookity'}
     mensaje_error = ''
     if request.method == 'POST':
         form = UserCreationForm(request.POST)

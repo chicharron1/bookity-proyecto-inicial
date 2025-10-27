@@ -5,11 +5,13 @@
     <p style="color: red;">{{ mensaje_error }}</p>
 {% endif %}
 
-<h1>Registrate en Bookity</h1>
+<h1 class="titulo-registro">Registrate en Bookity</h1>
+
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     {{ perfil_form.as_p }}
-    <button type="submit">Registrar</button>
+    <button type="submit" class="btn-registrar">Registrar</button>
 </form>
+
 {% endblock %}

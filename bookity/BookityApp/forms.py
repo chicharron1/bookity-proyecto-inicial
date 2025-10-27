@@ -12,3 +12,13 @@ class PerfilForm(forms.ModelForm):
     class Meta:
         model = Perfil
         fields = ['latitud_defecto', 'longitud_defecto']
+        widgets = {
+            'latitud_defecto': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingresa la latitud'
+            }),
+            'longitud_defecto': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingresa la longitud'
+            }),
+        }

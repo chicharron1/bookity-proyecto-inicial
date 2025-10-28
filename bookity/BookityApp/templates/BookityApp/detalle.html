@@ -17,11 +17,18 @@
     </div>
     <div class="comentarios_seccion">
         <h2 style="text-align: center; font-family: 'inder', sans-serif;">Comentarios</h2>
+        {% if user != publicacion.user %}
+        {% if publicacion.estado == 'Cerrado' %}
+            <p>Los comentarios están deshabilitados para esta publicación porque ya se cerró un trato.</p>
+        {% else %}
+>>>>>>> c8eb01c15593a0c8d950cb8a8eab425dd1929090
         <form method="post">
             {% csrf_token %}
             {{ comentario_form.as_p }}
             <button type="submit">Agregar Comentario</button>
         </form>
+        {% endif %}
+        {% endif %}
         {% if publicacion.comentarios.all %}
             {% for comentario in publicacion.comentarios.all %}
                 <div class="comentario">
@@ -31,6 +38,21 @@
                         <form method="post" action="{% url 'eliminar_comentario' comentario.id %}">
                             {% csrf_token %}
                             <button type="submit">Eliminar</button>
+                        </form>
+                    {% endif %}
+                    {% if publicacion.user == user and publicacion.estado != 'Cerrado' %}
+                        <form method="post" action="{% url 'cerrar_trato' publicacion.id comentario.id %}">
+                            {% csrf_token %}
+                            <button type="submit">Cerrar Trato</button>
+                        </form>
+                    {% endif %}
+                    {% if publicacion.trato_cerrado_con == comentario.user %}
+                        <p>¡Trato hecho!</p>
+                    {% endif %}
+                    {% if publicacion.user == user and publicacion.estado == 'Cerrado' %}
+                        <form method="post" action="{% url 'cancelar_trato' publicacion.id %}">
+                            {% csrf_token %}
+                            <button type="submit">Cancelar Trato</button>
                         </form>
                     {% endif %}
                 </div>

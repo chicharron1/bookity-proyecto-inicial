@@ -1,13 +1,21 @@
 {% extends 'BookityApp/base.html' %}
 {% block content %}
 <div>
-    <h1>{{ publicacion.titulo }}</h1>
-    <p>{{ publicacion.descripcion }}</p>
-    <p><strong>Contacto:</strong> {{ publicacion.contacto }}</p>
-    <p><strong>Tipo:</strong> {{ publicacion.tipo }}</p>
-    <p><strong>Ubicación:</strong> {{ publicacion.ubicacion }}</p>
-    <p><strong>Fecha de publicación:</strong> {{ publicacion.fecha_publicacion }}</p>
-    <div>
+    <div class="publicacion_detalle">
+        <h1>{{ publicacion.titulo }}</h1>
+        {% if publicacion.user == user %}
+            <form method="post" action="{% url 'eliminar_publicacion' publicacion.id %}">
+                {% csrf_token %}
+                <button type="submit">Eliminar Publicación</button>
+            </form>
+        {% endif %}
+        <p>{{ publicacion.descripcion }}</p>
+        <p><strong>Contacto:</strong> {{ publicacion.contacto }}</p>
+        <p><strong>Tipo:</strong> {{ publicacion.tipo }}</p>
+        <p><strong>Ubicación:</strong> {{ publicacion.ubicacion }}</p>
+        <p><strong>Fecha de publicación:</strong> {{ publicacion.fecha_publicacion }}</p>
+    </div>
+    <div class="comentarios_seccion">
         <h2>Comentarios</h2>
         <form method="post">
             {% csrf_token %}

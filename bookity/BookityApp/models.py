@@ -19,10 +19,11 @@ class Comentario(models.Model):
     texto = models.TextField()
     fecha_comentario = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f'Comentario por {self.user.username} en {self.publicacion.titulo}'
+    class Meta:
+        ordering = ['-fecha_comentario']
 
 class Perfil(models.Model):
     user = models.OneToOneField('auth.User', on_delete=models.CASCADE)
     latitud_defecto = models.FloatField(null=True, blank=True)
     longitud_defecto = models.FloatField(null=True, blank=True)
+    nivel_usuario = models.IntegerField(default=0)

@@ -10,6 +10,11 @@
                 <h2>{{ publicacion.titulo }}</h2>
                 <p>{{ publicacion.descripcion }}</p>
                 <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
+                <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
+                <form method="post" action="{% url 'eliminar_publicacion' publicacion.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Eliminar Publicación</button>
+                </form>
             </div>
         {% endfor %}
     {% else %}

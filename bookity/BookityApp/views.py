@@ -104,3 +104,10 @@ def eliminar_comentario(request, comentario_id):
     publicacion_id = comentario.publicacion.id
     comentario.delete()
     return redirect('detalle', publicacion_id=publicacion_id)
+
+@login_required
+def eliminar_publicacion(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion, id=publicacion_id, user=request.user)
+    if request.method == 'POST':
+        publicacion.delete()
+        return redirect('publicaciones')

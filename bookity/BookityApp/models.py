@@ -12,6 +12,8 @@ class Publicacion(models.Model):
     ubicacion = models.CharField(max_length=100)
     latitud = models.FloatField()
     longitud = models.FloatField()
+    estado = models.CharField(max_length=20, choices=[('Disponible', 'Disponible'), ('Cerrado', 'Cerrado')], default='Disponible')
+    trato_cerrado_con = models.ForeignKey('auth.User', related_name='trato_cerrado_con', on_delete=models.SET_NULL, null=True, blank=True)
 
 class Comentario(models.Model):
     publicacion = models.ForeignKey(Publicacion, related_name='comentarios', on_delete=models.CASCADE)

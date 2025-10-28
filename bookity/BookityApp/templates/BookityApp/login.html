@@ -8,6 +8,9 @@
 
 <form method="post" class="login-form">
     {% csrf_token %}
+    {% if mensaje_error %}
+        <p style="color: red;">{{ mensaje_error }}</p>
+    {% endif %}
 
     <div class="campo">
         <label for="{{ form.username.id_for_label }}">Usuario</label>

@@ -29,6 +29,7 @@ def inicio(request):
     return render(request, 'BookityApp/inicio.html')
 
 def login(request):
+    mensaje_error = ''
     form = AuthenticationForm(data=request.POST or None)
 
     form.fields['username'].widget.attrs.update({
@@ -45,8 +46,10 @@ def login(request):
             user = form.get_user()
             auth_login(request, user)
             return render(request, 'BookityApp/inicio.html')
-    
-    return render(request, 'BookityApp/login.html', {'form': form})
+        else:
+            mensaje_error = "Usuario o contraseña incorrectos"
+
+    return render(request, 'BookityApp/login.html', {'form': form, 'mensaje_error': mensaje_error})
 
 
 
@@ -111,3 +114,20 @@ def eliminar_publicacion(request, publicacion_id):
     if request.method == 'POST':
         publicacion.delete()
         return redirect('publicaciones')
+
+def cerrar_trato(request, publicacion_id, comentario_id):
+    publicacion = get_object_or_404(Publicacion, id=publicacion_id, user=request.user)
+    comentario = get_object_or_404(Comentario, id=comentario_id, publicacion=publicacion)
+    if request.method == 'POST':
+        publicacion.estado = 'Cerrado'
+        publicacion.trato_cerrado_con = comentario.user
+        publicacion.save()
+        return redirect('detalle', publicacion_id=publicacion.id)
+
+def cancelar_trato(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion, id=publicacion_id, user=request.user)
+    if request.method == 'POST':
+        publicacion.estado = 'Disponible'
+        publicacion.trato_cerrado_con = None
+        publicacion.save()
+        return redirect('detalle', publicacion_id=publicacion.id)

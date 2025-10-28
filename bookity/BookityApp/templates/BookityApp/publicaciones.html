@@ -15,15 +15,15 @@
 
 {% block content %}
 <div class="contenedor-publicaciones">
-  <h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;">Publicaciones</h1>
+  <h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif; font-size: 50px;"">Publicaciones</h1>
   {% if publicaciones %}
       {% for publicacion in publicaciones %}
           <div class="publicacion">
-              <h2 style="text-align: center; font-family: 'inder', sans-serif;">{{ publicacion.titulo }}</h2>
-              <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Autor:</strong> {{ publicacion.user.username }}</p>
-              <p style="text-align: center; font-family: 'inder', sans-serif;">{{ publicacion.descripcion|truncatechars:30 }}</p>
-              <p style="text-align: center; font-family: 'inder', sans-serif;"><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
-              <div style="text-align: center;">
+              <h2 style="text-align: left; font-family: 'inder', sans-serif;">{{ publicacion.titulo }}</h2>
+              <p style="text-align: left; font-family: 'inder', sans-serif;"><strong>Autor:</strong> {{ publicacion.user.username }}</p>
+              <p style="text-align: left; font-family: 'inder', sans-serif;">{{ publicacion.descripcion|truncatechars:30 }}</p>
+              <p style="text-align: left; font-family: 'inder', sans-serif;"><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
+              <div style="text-align: left; font-family: 'inder', sans-serif;">
                 <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
               </div>
           </div>

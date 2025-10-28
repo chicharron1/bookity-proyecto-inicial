@@ -21,7 +21,6 @@
         {% if publicacion.estado == 'Cerrado' %}
             <p>Los comentarios están deshabilitados para esta publicación porque ya se cerró un trato.</p>
         {% else %}
->>>>>>> c8eb01c15593a0c8d950cb8a8eab425dd1929090
         <form method="post">
             {% csrf_token %}
             {{ comentario_form.as_p }}

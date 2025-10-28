@@ -15,15 +15,17 @@
 
 {% block content %}
 <div class="contenedor-publicaciones">
-  <h1>Publicaciones</h1>
+  <h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;">Publicaciones</h1>
   {% if publicaciones %}
       {% for publicacion in publicaciones %}
           <div class="publicacion">
-              <h2>{{ publicacion.titulo }}</h2>
-              <p><strong>Autor:</strong> {{ publicacion.user.username }}</p>
-              <p>{{ publicacion.descripcion|truncatechars:30 }}</p>
-              <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
-              <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
+              <h2 style="text-align: center; font-family: 'inder', sans-serif;">{{ publicacion.titulo }}</h2>
+              <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Autor:</strong> {{ publicacion.user.username }}</p>
+              <p style="text-align: center; font-family: 'inder', sans-serif;">{{ publicacion.descripcion|truncatechars:30 }}</p>
+              <p style="text-align: center; font-family: 'inder', sans-serif;"><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
+              <div style="text-align: center;">
+                <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
+              </div>
           </div>
       {% endfor %}
   {% else %}
@@ -33,7 +35,7 @@
 {% endblock %}
 
 {% block extra_scripts %}
-<h1>Mapa de publicaciones</h1>
+<h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;">Mapa de publicaciones</h1>
 <div id="map"></div>
 <script>
   {% if user.perfil.longitud_defecto and user.perfil.latitud_defecto %}

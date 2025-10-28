@@ -1,16 +1,19 @@
 {% extends 'BookityApp/base.html' %}
 {% block content %}
-<h1>Perfil de Usuario</h1>
-<h2>{{ user.username }}</h2>
+<h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;">Perfil de Usuario</h1>
+<h2 style="text-align: center; font-family: 'inder', sans-serif;">{{ user.username }}</h2>
 <div class="contenedor-publicaciones">
-    <h1>Mis Publicaciones</h1>
+    <h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;">Mis Publicaciones</h1>
     {% if publicaciones %}
         {% for publicacion in publicaciones %}
             <div class="publicacion">
-                <h2>{{ publicacion.titulo }}</h2>
-                <p>{{ publicacion.descripcion }}</p>
-                <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
-                <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
+                <h2 style="text-align: center; font-family: 'inder', sans-serif;">{{ publicacion.titulo }}</h2>
+                <p style="text-align: center; font-family: 'inder', sans-serif;">{{ publicacion.descripcion }}</p>
+                <p style="text-align: center; font-family: 'inder', sans-serif;"><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
+                <div style="text-align: center;">
+                    <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
+                  </div>
+                  
                 <form method="post" action="{% url 'eliminar_publicacion' publicacion.id %}">
                     {% csrf_token %}
                     <button type="submit">Eliminar Publicación</button>

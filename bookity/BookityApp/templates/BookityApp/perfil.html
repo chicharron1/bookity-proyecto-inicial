@@ -1,6 +1,6 @@
 {% extends 'BookityApp/base.html' %}
 {% block content %}
-<h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;">Perfil de Usuario</h1>
+<h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif; font-size: 50px;">Perfil de Usuario</h1>
 <h2 style="text-align: center; font-family: 'inder', sans-serif;">{{ user.username }}</h2>
 <p><strong>Nivel:</strong> {{ perfil.nivel_usuario }}</p>
 <p><strong>Puntaje:</strong> {{ perfil.puntaje_usuario }}</p>
@@ -14,17 +14,15 @@
                 <p style="text-align: center; font-family: 'inder', sans-serif;"><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
                 <div style="text-align: center;">
                     <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
-                  </div>
-                  
+                </div>
                 <form method="post" action="{% url 'eliminar_publicacion' publicacion.id %}">
                     {% csrf_token %}
-                    <button type="submit">Eliminar Publicación</button>
+                    <button style="margin-top:-250px"type="submit" >Eliminar Publicación</button>
                 </form>
             </div>
         {% endfor %}
     {% else %}
         <p>No has realizado ninguna publicación todavía.</p>
     {% endif %}
-</div>
 </div>
 {% endblock %}

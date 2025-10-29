@@ -4,39 +4,45 @@
 {% block extra_head %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<style>
-  #map {
-    height: 500px;
-    width: 100%;
-    margin-top: 20px;
-  }
-</style>
 {% endblock %}
 
 {% block content %}
-<div class="contenedor-publicaciones">
-  <h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;">Publicaciones</h1>
-  {% if publicaciones %}
-      {% for publicacion in publicaciones %}
+<!-- Contenedor para ambos títulos en la misma línea -->
+<div class="contenedor-titulos">
+  <h1 class="titulo-seccion" style="margin-right: 0px;">Publicaciones</h1>
+  <h1 class="titulo-seccion" style="margin-right: 0px;">Mapa de publicaciones</h1>
+</div>
+
+<div class="contenedor-principal">
+  <!-- Columna de publicaciones -->
+  <div class="contenedor-publicaciones">
+    {% if publicaciones %}
+      <div class="scroll-box">
+        {% for publicacion in publicaciones %}
           <div class="publicacion">
-              <h2 style="text-align: center; font-family: 'inder', sans-serif;">{{ publicacion.titulo }}</h2>
-              <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Autor:</strong> {{ publicacion.user.username }}</p>
-              <p style="text-align: center; font-family: 'inder', sans-serif;">{{ publicacion.descripcion|truncatechars:30 }}</p>
-              <p style="text-align: center; font-family: 'inder', sans-serif;"><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
-              <div style="text-align: center;">
-                <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
-              </div>
+            <h2>{{ publicacion.titulo }}</h2>
+            <p><strong>Autor:</strong> {{ publicacion.user.username }}</p>
+            <p>{{ publicacion.descripcion|truncatechars:30 }}</p>
+            <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
+            <div>
+              <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
+            </div>
           </div>
-      {% endfor %}
-  {% else %}
+        {% endfor %}
+      </div>
+    {% else %}
       <p>No hay publicaciones todavía.</p>
-  {% endif %}
+    {% endif %}
+  </div>
+  
+  <!-- Columna del mapa -->
+  <div class="contenedor-mapa">
+    <div id="map"></div>
+  </div>
 </div>
 {% endblock %}
 
 {% block extra_scripts %}
-<h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;">Mapa de publicaciones</h1>
-<div id="map"></div>
 <script>
   {% if user.perfil.longitud_defecto and user.perfil.latitud_defecto %}
     var map = L.map('map').setView([{{ user.perfil.latitud_defecto }}, {{ user.perfil.longitud_defecto }}], 16);
@@ -47,6 +53,7 @@
   L.tileLayer('https://api.maptiler.com/maps/streets-v2/256/{z}/{x}/{y}.png?key=EdWFsXtwOisU8uwq86cZ', {
       maxZoom: 19,
       attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'}).addTo(map);
+  
   {% if publicaciones %}
     {% for publicacion in publicaciones %}
       L.marker([{{ publicacion.latitud }}, {{ publicacion.longitud }}])

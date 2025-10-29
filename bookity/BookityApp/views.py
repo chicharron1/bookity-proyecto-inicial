@@ -65,6 +65,8 @@ def publicar(request):
         if form.is_valid():
             publicacion = form.save(commit=False)
             publicacion.user = request.user
+            publicacion.user.perfil.puntaje_usuario += 10
+            publicacion.user.perfil.actualizar_nivel()
             publicacion.save()
             return redirect('inicio')
         else:
@@ -94,6 +96,8 @@ def detalle(request, publicacion_id):
             comentario = comentario_form.save(commit=False)
             comentario.user = request.user
             comentario.publicacion = publicacion
+            comentario.user.perfil.puntaje_usuario += 5
+            comentario.user.perfil.actualizar_nivel()
             comentario.save()
             return redirect('detalle', publicacion_id=publicacion.id)
     else:
@@ -105,6 +109,9 @@ def detalle(request, publicacion_id):
 def eliminar_comentario(request, comentario_id):
     comentario = get_object_or_404(Comentario, id=comentario_id, user=request.user)
     publicacion_id = comentario.publicacion.id
+    comentario.user.perfil.puntaje_usuario -= 5
+    comentario.user.perfil.save()
+    comentario.user.perfil.actualizar_nivel()
     comentario.delete()
     return redirect('detalle', publicacion_id=publicacion_id)
 
@@ -112,6 +119,9 @@ def eliminar_comentario(request, comentario_id):
 def eliminar_publicacion(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion, id=publicacion_id, user=request.user)
     if request.method == 'POST':
+        publicacion.user.perfil.puntaje_usuario -= 10
+        publicacion.user.perfil.save()
+        publicacion.user.perfil.actualizar_nivel()
         publicacion.delete()
         return redirect('publicaciones')
 
@@ -122,7 +132,7 @@ def cerrar_trato(request, publicacion_id, comentario_id):
         publicacion.estado = 'Cerrado'
         publicacion.trato_cerrado_con = comentario.user
         perfil_usuario = Perfil.objects.get(user=request.user)
-        perfil_usuario.puntaje_usuario += 10
+        perfil_usuario.puntaje_usuario += 20
         perfil_usuario.actualizar_nivel()
         publicacion.save()
         return redirect('detalle', publicacion_id=publicacion.id)
@@ -133,7 +143,7 @@ def cancelar_trato(request, publicacion_id):
         publicacion.estado = 'Disponible'
         publicacion.trato_cerrado_con = None
         perfil_usuario = Perfil.objects.get(user=request.user)
-        perfil_usuario.puntaje_usuario -= 10
+        perfil_usuario.puntaje_usuario -= 20
         perfil_usuario.save()
         perfil_usuario.actualizar_nivel()
         publicacion.save()

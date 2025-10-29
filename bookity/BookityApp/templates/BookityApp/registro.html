@@ -1,5 +1,6 @@
 {% extends 'BookityApp/base.html' %}
 {% block content %}
+{% load static %}
 
 {% if mensaje_error %}
     <p style="color: red;">{{ mensaje_error }}</p>
@@ -13,6 +14,7 @@
     <button type="button" id="boton_perfil_form">Agregar ubicación por defecto</button>
     <div id="id_perfil_form" style="display: none;">
         {{ perfil_form.as_p }}
+        <div id="map" style="height: 400px;"></div>
     </div>
     <button type="submit">Registrar</button>
 </form>
@@ -28,4 +30,11 @@
       }
   });
 </script>
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet/dist/leaflet.css"
+/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="{% static 'js/mapa.js' %}"></script>
 {% endblock %}

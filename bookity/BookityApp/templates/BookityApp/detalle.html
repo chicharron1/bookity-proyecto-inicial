@@ -2,18 +2,20 @@
 {% block content %}
 <div>
     <div class="publicacion_detalle">
-        <h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;">{{ publicacion.titulo }}</h1>
+        <h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;font-size:50px;padding-top: 50px;">{{ publicacion.titulo }}</h1>
         {% if publicacion.user == user %}
             <form method="post" action="{% url 'eliminar_publicacion' publicacion.id %}">
                 {% csrf_token %}
-                <button type="submit">Eliminar Publicación</button>
+                <button style="margin-top:-300px;"type="submit">Eliminar Publicación</button>
             </form>
         {% endif %}
-        <p style="text-align: center; font-family: 'inder', sans-serif;">{{ publicacion.descripcion }}</p>
-        <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Contacto:</strong> {{ publicacion.contacto }}</p>
-        <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Tipo:</strong> {{ publicacion.tipo }}</p>
-        <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Ubicación:</strong> {{ publicacion.ubicacion }}</p>
-        <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Fecha de publicación:</strong> {{ publicacion.fecha_publicacion }}</p>
+        <div style="text-align: center; font-family: 'inder', sans-serif; font-size:20px;">
+            <p>{{ publicacion.descripcion }}</p>
+            <p><strong>Contacto:</strong> {{ publicacion.contacto }}</p>
+            <p><strong>Tipo:</strong> {{ publicacion.tipo }}</p>
+            <p><strong>Ubicación:</strong> {{ publicacion.ubicacion }}</p>
+            <p><strong>Fecha de publicación:</strong> {{ publicacion.fecha_publicacion }}</p>
+        </div>
     </div>
     <div class="comentarios_seccion">
         <h2 style="text-align: center; font-family: 'inder', sans-serif;">Comentarios</h2>
@@ -57,7 +59,7 @@
                 </div>
             {% endfor %}
         {% else %}
-            <p>No hay comentarios aún.</p>
+            <p style="text-align: center;">No hay comentarios aún.</p>
         {% endif %}
     </div>
 </div>

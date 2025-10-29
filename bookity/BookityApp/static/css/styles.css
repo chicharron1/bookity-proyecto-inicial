@@ -138,10 +138,10 @@ form {
   /*Botón de enviar*/
   button,
   input[type="submit"] {
-    width: 320px;          
+    width: 250px;          
     padding: 10px;
     border: none;
-    background-color: #4CAF50;
+    background-color:#adc178;
     color: white;
     border-radius: 8px;
     font-size: 16px;
@@ -174,4 +174,67 @@ button:hover,
     color: #333;
     font-family:"Sour Gummy", sans-serif;
 
+}
+
+/* Contenedores principales */
+.contenedor-titulos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: space-between;
+  margin-bottom: 20px;
+}
+
+.contenedor-principal {
+  display: flex;
+  gap: 0px;
+  margin-top: 0px;
+}
+
+.contenedor-publicaciones {
+  flex: 1;
+}
+
+.contenedor-mapa {
+  flex: 2;
+}
+
+/* Caja de scroll para publicaciones */
+.scroll-box {
+  height: 500px;
+  width: 350px;
+  overflow-y: auto; 
+  border: 2px solid #ccc;
+  padding: 15px;
+  background-color: #f9f9f9;
+  margin-right: 150px;
+}
+
+/* Estilos para cada publicación */
+.publicacion {
+  border-bottom: 1px solid #ddd;
+  padding: 20px 0;
+}
+
+.publicacion_detalle {
+  text-align: center; 
+  font-family: 'inder', sans-serif;
+}
+
+/* Mapa */
+#map {
+  height: 500px;
+  width: 900px;
+}
+
+/* Títulos */
+.titulo-seccion {
+  font-family: 'Sour Gummy', sans-serif;
+  font-size: 50px;
+  margin-bottom: 0px;
+}
+.publicacion {
+    margin-bottom:0px
+}
+.contenedor-publicaciones {
+ margin-bottom: 0px; 
 }

@@ -82,7 +82,7 @@ def publicaciones(request):
 def perfil(request):
     publicaciones = Publicacion.objects.filter(user=request.user).order_by('-fecha_publicacion')
     return render(request, 'BookityApp/perfil.html', {
-        'publicaciones': publicaciones
+        'publicaciones': publicaciones,'perfil': Perfil.objects.get(user=request.user)
     })
 
 def detalle(request, publicacion_id):
@@ -121,6 +121,9 @@ def cerrar_trato(request, publicacion_id, comentario_id):
     if request.method == 'POST':
         publicacion.estado = 'Cerrado'
         publicacion.trato_cerrado_con = comentario.user
+        perfil_usuario = Perfil.objects.get(user=request.user)
+        perfil_usuario.puntaje_usuario += 10
+        perfil_usuario.actualizar_nivel()
         publicacion.save()
         return redirect('detalle', publicacion_id=publicacion.id)
 
@@ -129,5 +132,9 @@ def cancelar_trato(request, publicacion_id):
     if request.method == 'POST':
         publicacion.estado = 'Disponible'
         publicacion.trato_cerrado_con = None
+        perfil_usuario = Perfil.objects.get(user=request.user)
+        perfil_usuario.puntaje_usuario -= 10
+        perfil_usuario.save()
+        perfil_usuario.actualizar_nivel()
         publicacion.save()
         return redirect('detalle', publicacion_id=publicacion.id)

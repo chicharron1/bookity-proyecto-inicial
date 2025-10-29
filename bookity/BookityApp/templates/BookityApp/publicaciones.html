@@ -41,7 +41,7 @@
   {% if user.perfil.longitud_defecto and user.perfil.latitud_defecto %}
     var map = L.map('map').setView([{{ user.perfil.latitud_defecto }}, {{ user.perfil.longitud_defecto }}], 16);
   {% else %}
-    var map = L.map('map').setView([0, 0], 16);
+    var map = L.map('map').setView([-33.03473, -71.59688], 16);
   {% endif %}
 
   L.tileLayer('https://api.maptiler.com/maps/streets-v2/256/{z}/{x}/{y}.png?key=EdWFsXtwOisU8uwq86cZ', {

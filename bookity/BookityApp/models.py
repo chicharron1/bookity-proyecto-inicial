@@ -28,4 +28,14 @@ class Perfil(models.Model):
     user = models.OneToOneField('auth.User', on_delete=models.CASCADE)
     latitud_defecto = models.FloatField(null=True, blank=True)
     longitud_defecto = models.FloatField(null=True, blank=True)
-    nivel_usuario = models.IntegerField(default=0)
+    puntaje_usuario = models.IntegerField(default=0)
+    nivel_usuario = models.CharField(max_length=20, choices=[('Nuevo', 'Nuevo'), ('Medio', 'Medio'), ('KPro', 'KPro')], default='Nuevo')
+
+    def actualizar_nivel(self):
+        if self.puntaje_usuario >= 100:
+            self.nivel_usuario = 'KPro'
+        elif self.puntaje_usuario >= 50:
+            self.nivel_usuario = 'Medio'
+        else:
+            self.nivel_usuario = 'Nuevo'
+        self.save()

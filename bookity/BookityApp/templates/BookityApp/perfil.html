@@ -2,6 +2,7 @@
 {% block content %}
 <h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;">Perfil de Usuario</h1>
 <h2 style="text-align: center; font-family: 'inder', sans-serif;">{{ user.username }}</h2>
+<p><strong>Nivel:</strong> {{ perfil.nivel_usuario }}</p>
 <div class="contenedor-publicaciones">
     <h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;">Mis Publicaciones</h1>
     {% if publicaciones %}

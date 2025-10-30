@@ -20,21 +20,31 @@
 </form>
 
 <script>
-    const botonAgregarUbicacion= document.getElementById('boton_perfil_form');
+    const botonAgregarUbicacion = document.getElementById('boton_perfil_form');
     const element_perfil_form = document.getElementById('id_perfil_form');
+    let mapaInicializado = false;
+
     botonAgregarUbicacion.addEventListener('click', () => {
-        if(element_perfil_form.style.display === 'none'){
-          element_perfil_form.style.display = 'block';
-      } else {
-          element_perfil_form.style.display = 'none';
-      }
-  });
+        if (element_perfil_form.style.display === 'none') {
+        element_perfil_form.style.display = 'block';
+
+        // Inicializar el mapa solo una vez
+        if (!mapaInicializado) {
+            if (typeof initMap === 'function') {
+            initMap();
+            mapaInicializado = true;
+            }
+        }
+        } else {
+        element_perfil_form.style.display = 'none';
+        }
+    });
 </script>
 
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet/dist/leaflet.css"
-/>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
 <script src="{% static 'js/mapa.js' %}"></script>
+
 {% endblock %}

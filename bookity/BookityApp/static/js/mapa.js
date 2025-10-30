@@ -1,39 +1,49 @@
-document.addEventListener('DOMContentLoaded', function() {
+function initMap() {
   const mapContainer = document.getElementById('map');
   if (!mapContainer) return; // Si no hay mapa en esta vista, no hace nada
 
-  // Centrar mapa (ejemplo: Santiago)
-  const map = L.map('map').setView([-33.45, -70.66], 13);
+  const defaultLat = -33.03473;
+  const defaultLng = -71.59688;
 
-  // Capa base idéntica a la que usas en publicaciones
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap',
-  }).addTo(map);
+  // Si vienen coordenadas del usuario, úsalas
+  const lat = (typeof userLat !== 'undefined' && userLat !== null) ? userLat : defaultLat;
+  const lng = (typeof userLng !== 'undefined' && userLng !== null) ? userLng : defaultLng;
 
+  // 1️⃣ Crear el mapa primero
+  const map = L.map('map').setView([lat, lng], 16);
+
+  // 2️⃣ Luego agregar la capa
+  L.tileLayer(
+    'https://api.maptiler.com/maps/streets-v2/256/{z}/{x}/{y}.png?key=EdWFsXtwOisU8uwq86cZ',
+    {
+      maxZoom: 19,
+      attribution:
+        '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+    }
+  ).addTo(map);
+
+  // 3️⃣ Definir variables de marcador y campos
   let marker;
-
-  // Si existen campos de lat/lng en el formulario, úsalos
   const latInput = document.getElementById('id_latitud');
   const lngInput = document.getElementById('id_longitud');
 
-  // Si ya hay coordenadas (por ejemplo, al editar), mostrarlas
+  // 4️⃣ Si hay valores iniciales, marcarlos
   if (latInput?.value && lngInput?.value) {
-    const lat = parseFloat(latInput.value);
-    const lng = parseFloat(lngInput.value);
-    marker = L.marker([lat, lng]).addTo(map);
-    map.setView([lat, lng], 15);
+    const currentLat = parseFloat(latInput.value);
+    const currentLng = parseFloat(lngInput.value);
+    marker = L.marker([currentLat, currentLng]).addTo(map);
+    map.setView([currentLat, currentLng], 16);
   }
 
-  // Al hacer clic en el mapa
-  map.on('click', function(e) {
-    const lat = e.latlng.lat.toFixed(6);
-    const lng = e.latlng.lng.toFixed(6);
+  // 5️⃣ Al hacer clic en el mapa
+  map.on('click', function (e) {
+    const newLat = e.latlng.lat.toFixed(6);
+    const newLng = e.latlng.lng.toFixed(6);
 
     if (marker) marker.setLatLng(e.latlng);
     else marker = L.marker(e.latlng).addTo(map);
 
-    if (latInput) latInput.value = lat;
-    if (lngInput) lngInput.value = lng;
+    if (latInput) latInput.value = newLat;
+    if (lngInput) lngInput.value = newLng;
   });
-});
+}

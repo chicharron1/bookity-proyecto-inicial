@@ -27,6 +27,7 @@
             <div>
               <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
             </div>
+            <button id="id_boton_ubicar_publicacion{{ publicacion.id }}">Ubicar en el mapa</button>
           </div>
         {% endfor %}
       </div>
@@ -62,5 +63,12 @@
       .bindPopup('<b>{{ publicacion.titulo }}</b><br>{{ publicacion.descripcion|truncatechars:65|escapejs }} <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>');
     {% endfor %}
   {% endif %}
+
+  {% for publicacion in publicaciones %}
+    boton_ubicar = document.getElementById('id_boton_ubicar_publicacion{{ publicacion.id }}');
+    boton_ubicar.addEventListener('click', () => {
+      map.setView([{{ publicacion.latitud }}, {{ publicacion.longitud }}], 18);
+    });
+  {% endfor %}
 </script>
 {% endblock %}

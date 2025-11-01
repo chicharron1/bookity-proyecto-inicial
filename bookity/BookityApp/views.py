@@ -16,7 +16,7 @@ def registro(request):
             perfil = perfil_form.save(commit=False)
             perfil.user = user
             perfil.save()
-            return render(request, 'BookityApp/registro.html', {'form': form, 'perfil_form': perfil_form, 'mensaje_error': ''})
+            return redirect('login')
         else:
             mensaje_error = "Inválido :("
     else:
@@ -49,8 +49,6 @@ def login(request):
             mensaje_error = "Usuario o contraseña incorrectos"
 
     return render(request, 'BookityApp/login.html', {'form': form, 'mensaje_error': mensaje_error})
-
-
 
 def cerrar(request):
     logout(request)
@@ -147,3 +145,23 @@ def cancelar_trato(request, publicacion_id):
         perfil_usuario.actualizar_nivel()
         publicacion.save()
         return redirect('detalle', publicacion_id=publicacion.id)
+
+@login_required
+def eliminar_cuenta(request):
+    if request.method == 'POST':
+        user = request.user
+        logout(request)
+        user.delete()
+        return redirect('registro')
+
+@login_required
+def editar_perfil(request):
+    perfil = get_object_or_404(Perfil, user=request.user)
+    if request.method == 'POST':
+        form = PerfilForm(request.POST, instance=perfil)
+        if form.is_valid():
+            form.save()
+            return redirect('perfil')
+    else:
+        form = PerfilForm(instance=perfil)
+    return render(request, 'BookityApp/editar_perfil.html', {'form': form})

@@ -20,7 +20,17 @@ class PerfilForm(forms.ModelForm):
             'latitud_defecto': forms.HiddenInput(),
             'longitud_defecto': forms.HiddenInput(),
         }
+        
 class ComentarioForm(forms.ModelForm):
     class Meta:
         model = Comentario
         fields = ['texto']
+
+class EditarPerfilForm(forms.ModelForm):
+    class Meta:
+        model = Perfil
+        fields = ['latitud_defecto', 'longitud_defecto']
+        widgets = {
+            'latitud_defecto': forms.HiddenInput(),
+            'longitud_defecto': forms.HiddenInput(),
+        }

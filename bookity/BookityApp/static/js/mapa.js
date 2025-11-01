@@ -1,13 +1,12 @@
 function initMap() {
   const mapContainer = document.getElementById('map');
-  if (!mapContainer) return; // Si no hay mapa en esta vista, no hace nada
 
   const defaultLat = -33.03473;
   const defaultLng = -71.59688;
 
   // Si vienen coordenadas del usuario, úsalas
-  const lat = (typeof userLat !== 'undefined' && userLat !== null) ? userLat : defaultLat;
-  const lng = (typeof userLng !== 'undefined' && userLng !== null) ? userLng : defaultLng;
+  const lat = (typeof latitud_defecto !== 'undefined' && latitud_defecto !== null) ? latitud_defecto : defaultLat;
+  const lng = (typeof longitud_defecto !== 'undefined' && longitud_defecto !== null) ? longitud_defecto : defaultLng;
 
   // 1️⃣ Crear el mapa primero
   const map = L.map('map').setView([lat, lng], 16);
@@ -17,6 +16,7 @@ function initMap() {
     'https://api.maptiler.com/maps/streets-v2/256/{z}/{x}/{y}.png?key=EdWFsXtwOisU8uwq86cZ',
     {
       maxZoom: 19,
+      minZoom: 1,
       attribution:
         '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
     }
@@ -24,8 +24,8 @@ function initMap() {
 
   // 3️⃣ Definir variables de marcador y campos
   let marker;
-  const latInput = document.getElementById('id_latitud');
-  const lngInput = document.getElementById('id_longitud');
+  const latInput = document.getElementById('id_latitud')||document.getElementById('id_latitud_defecto');
+  const lngInput = document.getElementById('id_longitud')||document.getElementById('id_longitud_defecto');
 
   // 4️⃣ Si hay valores iniciales, marcarlos
   if (latInput?.value && lngInput?.value) {

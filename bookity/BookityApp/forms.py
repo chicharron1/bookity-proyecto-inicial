@@ -7,20 +7,18 @@ class PublicacionForm(forms.ModelForm):
     class Meta:
         model = Publicacion
         fields = ['titulo', 'descripcion', 'contacto', 'tipo', 'ubicacion', 'latitud', 'longitud']
+        widgets = {
+            'latitud': forms.HiddenInput(),
+            'longitud': forms.HiddenInput(),
+        }
 
 class PerfilForm(forms.ModelForm):
     class Meta:
         model = Perfil
         fields = ['latitud_defecto', 'longitud_defecto']
         widgets = {
-            'latitud_defecto': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Ingresa la latitud'
-            }),
-            'longitud_defecto': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Ingresa la longitud'
-            }),
+            'latitud_defecto': forms.HiddenInput(),
+            'longitud_defecto': forms.HiddenInput(),
         }
 class ComentarioForm(forms.ModelForm):
     class Meta:

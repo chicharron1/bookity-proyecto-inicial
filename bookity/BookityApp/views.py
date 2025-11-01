@@ -7,7 +7,6 @@ from .models import Publicacion, Perfil, Comentario
 from django.contrib.auth.decorators import login_required
 
 def registro(request):
-    contexto = {'titulo': 'Registrarse a Bookity'}
     mensaje_error = ''
     if request.method == 'POST':
         form = UserCreationForm(request.POST)

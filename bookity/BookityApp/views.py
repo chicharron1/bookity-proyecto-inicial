@@ -76,6 +76,12 @@ def publicar(request):
 def publicaciones(request):
     publicaciones = Publicacion.objects.filter(estado='Disponible').order_by('-fecha_publicacion')
     query = request.GET.get('q')
+    tipo_filtro = request.GET.get('tipo_filtro')
+    if tipo_filtro == 'Intercambios':
+        publicaciones = publicaciones.filter(tipo='Intercambio')
+    elif tipo_filtro == 'Donaciones':
+        publicaciones = publicaciones.filter(tipo='Donación')
+    
     if query:
         publicaciones = publicaciones.filter(
             Q(titulo__icontains=query) | Q(descripcion__icontains=query)

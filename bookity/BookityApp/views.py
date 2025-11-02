@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, logout, login as auth_login
 from .forms import PublicacionForm, PerfilForm, ComentarioForm
 from .models import Publicacion, Perfil, Comentario
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 def registro(request):
     mensaje_error = ''
@@ -73,7 +74,12 @@ def publicar(request):
     return render(request, 'BookityApp/publicar.html', {'form': form})
 
 def publicaciones(request):
-    publicaciones = Publicacion.objects.all().order_by('-fecha_publicacion')
+    publicaciones = Publicacion.objects.filter(estado='Disponible').order_by('-fecha_publicacion')
+    query = request.GET.get('q')
+    if query:
+        publicaciones = publicaciones.filter(
+            Q(titulo__icontains=query) | Q(descripcion__icontains=query)
+        )
     return render(request, 'BookityApp/publicaciones.html', {
         'publicaciones': publicaciones
     })

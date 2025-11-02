@@ -7,6 +7,13 @@
 {% endblock %}
 
 {% block content %}
+<div class="contenedor_busqueda">
+  <form method="get" action="{% url 'publicaciones' %}">
+      <input type="text" name="q" placeholder="Buscar publicaciones..." value="{{ request.GET.q }}">
+      <button type="submit">Buscar</button>
+  </form>
+</div>
+
 <!-- Contenedor para ambos títulos en la misma línea -->
 <div class="contenedor-titulos">
   <h1 class="titulo-seccion" style="margin-right: 0px;">Publicaciones</h1>
@@ -19,20 +26,22 @@
     {% if publicaciones %}
       <div class="scroll-box">
         {% for publicacion in publicaciones %}
-          <div class="publicacion">
-            <h2>{{ publicacion.titulo }}</h2>
-            <p><strong>Autor:</strong> {{ publicacion.user.username }}</p>
-            <p>{{ publicacion.descripcion|truncatechars:30 }}</p>
-            <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
-            <div>
-              <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
+          {% if publicacion.estado == 'Disponible' %}
+            <div class="publicacion">
+              <h2>{{ publicacion.titulo }}</h2>
+              <p><strong>Autor:</strong> {{ publicacion.user.username }}</p>
+              <p>{{ publicacion.descripcion|truncatechars:30 }}</p>
+              <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
+              <div>
+                <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
+              </div>
+              <button id="id_boton_ubicar_publicacion{{ publicacion.id }}">Ubicar en el mapa</button>
             </div>
-            <button id="id_boton_ubicar_publicacion{{ publicacion.id }}">Ubicar en el mapa</button>
-          </div>
+          {% endif %}
         {% endfor %}
       </div>
     {% else %}
-      <p>No hay publicaciones todavía.</p>
+      <p>No publicaciones encontradas.</p>
     {% endif %}
   </div>
   
@@ -61,14 +70,11 @@
       L.marker([{{ publicacion.latitud }}, {{ publicacion.longitud }}])
       .addTo(map)
       .bindPopup('<b>{{ publicacion.titulo }}</b><br>{{ publicacion.descripcion|truncatechars:65|escapejs }} <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>');
+      boton_ubicar = document.getElementById('id_boton_ubicar_publicacion{{ publicacion.id }}');
+      boton_ubicar.addEventListener('click', () => {
+        map.setView([{{ publicacion.latitud }}, {{ publicacion.longitud }}], 18);
+      });
     {% endfor %}
   {% endif %}
-
-  {% for publicacion in publicaciones %}
-    boton_ubicar = document.getElementById('id_boton_ubicar_publicacion{{ publicacion.id }}');
-    boton_ubicar.addEventListener('click', () => {
-      map.setView([{{ publicacion.latitud }}, {{ publicacion.longitud }}], 18);
-    });
-  {% endfor %}
 </script>
 {% endblock %}

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login as auth_login
-from .forms import PublicacionForm, PerfilForm, ComentarioForm
+from .forms import PublicacionForm, PerfilForm, ComentarioForm, CalificacionForm
 from .models import Publicacion, Perfil, Comentario
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -99,8 +99,22 @@ def perfil(request):
 def detalle(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion, id=publicacion_id)
     comentario_form = ComentarioForm()
+    calificacion_form = CalificacionForm()
+
+    ya_comento = False
+    if request.user.is_authenticated:
+        ya_comento = Comentario.objects.filter(publicacion=publicacion, user=request.user).exists()
+
     if request.method == 'POST':
         comentario_form = ComentarioForm(request.POST)
+        calificacion_form = CalificacionForm(request.POST)
+
+        if 'calificacion' in request.POST and calificacion_form.is_valid():
+            calificacion = calificacion_form.cleaned_data['calificacion']
+            publicacion.calificación = calificacion
+            publicacion.save()
+            return redirect('detalle', publicacion_id=publicacion.id)
+
         if comentario_form.is_valid():
             comentario = comentario_form.save(commit=False)
             comentario.user = request.user
@@ -111,7 +125,7 @@ def detalle(request, publicacion_id):
             return redirect('detalle', publicacion_id=publicacion.id)
     else:
         comentario_form = ComentarioForm()
-    return render(request, 'BookityApp/detalle.html', {'publicacion': publicacion, 'comentario_form': comentario_form})
+    return render(request, 'BookityApp/detalle.html', {'publicacion': publicacion, 'comentario_form': comentario_form, 'ya_comento': ya_comento, 'calificacion_form': calificacion_form})
 
 
 @login_required
@@ -177,3 +191,30 @@ def editar_perfil(request):
     else:
         form = PerfilForm(instance=perfil)
     return render(request, 'BookityApp/editar_perfil.html', {'form': form})
+
+@login_required
+def calificar_usuario(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion, id=publicacion_id)
+    autor = publicacion.user
+    if request.method == 'POST':
+        form = CalificacionForm(request.POST)
+        if form.is_valid():
+            calificacion = form.cleaned_data['calificacion']
+            publicacion.calificacion = calificacion
+            if calificacion == 1:
+                autor.perfil.puntaje_usuario -= 8
+            if calificacion == 2:
+                autor.perfil.puntaje_usuario -= 4
+            if calificacion == 3:
+                autor.perfil.puntaje_usuario += 2
+            if calificacion == 4:
+                autor.perfil.puntaje_usuario += 6
+            if calificacion == 5:
+                autor.perfil.puntaje_usuario += 10
+            autor.perfil.save()
+            autor.perfil.actualizar_nivel()
+            publicacion.save()
+            return redirect('detalle', publicacion_id=publicacion.id)
+    else:
+        form = CalificacionForm()
+    return render(request, 'BookityApp/calificar_usuario.html', {'form': form, 'publicacion': publicacion})

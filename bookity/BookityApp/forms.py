@@ -34,3 +34,6 @@ class EditarPerfilForm(forms.ModelForm):
             'latitud_defecto': forms.HiddenInput(),
             'longitud_defecto': forms.HiddenInput(),
         }
+
+class CalificacionForm(forms.Form):
+    calificacion = forms.IntegerField(min_value=1, max_value=5, label='Calificación (1-5)')

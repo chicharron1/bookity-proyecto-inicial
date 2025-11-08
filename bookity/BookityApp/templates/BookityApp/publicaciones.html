@@ -72,13 +72,43 @@
   
   {% if publicaciones %}
     {% for publicacion in publicaciones %}
-      L.marker([{{ publicacion.latitud }}, {{ publicacion.longitud }}])
-      .addTo(map)
-      .bindPopup('<b>{{ publicacion.titulo }}</b><br>{{ publicacion.descripcion|truncatechars:65|escapejs }} <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>');
-      boton_ubicar = document.getElementById('id_boton_ubicar_publicacion{{ publicacion.id }}');
-      boton_ubicar.addEventListener('click', () => {
-        map.setView([{{ publicacion.latitud }}, {{ publicacion.longitud }}], 18);
-      });
+      (function() {
+        let lat = parseFloat("{{ publicacion.latitud|default_if_none:0 }}");
+        let lng = parseFloat("{{ publicacion.longitud|default_if_none:0 }}");
+        let radio = parseFloat("{{ publicacion.radio_marcador|default_if_none:0 }}");
+
+        let marker = L.marker([lat, lng]).addTo(map);
+        marker.bindPopup('<b>{{ publicacion.titulo }}</b><br>{{ publicacion.descripcion|truncatechars:65|escapejs }} <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>');
+        
+        let tempCircle = null;
+        marker.on('popupopen', () => {
+          if (radio > 0) {
+            tempCircle = L.circle([lat, lng], {
+              radius: radio,
+              color: 'lightblue',
+              fillColor: 'lightblue',
+              fillOpacity: 0.25,
+              weight: 1
+            }).addTo(map);
+          }
+        });
+        marker.on('popupclose', () => {
+          if (tempCircle) {
+            map.removeLayer(tempCircle);
+            tempCircle = null;
+          }
+        });
+
+        const boton_ubicar = document.getElementById('id_boton_ubicar_publicacion{{ publicacion.id }}');
+        if (boton_ubicar) {
+          boton_ubicar.addEventListener('click', () => {
+            map.setView([lat, lng], 18);
+          });
+        }
+      })();
+
+      
+
     {% endfor %}
   {% endif %}
 </script>

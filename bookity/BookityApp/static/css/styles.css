@@ -238,3 +238,8 @@ button:hover,
 .contenedor-publicaciones {
  margin-bottom: 0px; 
 }
+
+img {
+    width: 50px;
+    height: auto;
+}

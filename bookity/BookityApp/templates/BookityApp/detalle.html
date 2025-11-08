@@ -1,4 +1,8 @@
 {% extends 'BookityApp/base.html' %}
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+{% endblock %}
 {% block content %}
 <div>
     <div class="publicacion_detalle">
@@ -33,6 +37,11 @@
                 </button>
             </form>
         {% endif %}
+    </div>
+
+    <div class="mapa_detalle">
+        <h2 style="text-align: center; font-family: 'inder', sans-serif;">Rango de entrega</h2>
+        <div id="map" style="height: 400px; margin-top: 20px; width:400px;"></div>
     </div>
 
     <div class="sobre_autor_seccion">
@@ -99,4 +108,26 @@
         {% endif %}
     </div>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const latitud_publicacion = {{ publicacion.latitud }};
+    const longitud_publicacion = {{ publicacion.longitud }};
+    const radio_publicacion = {{ publicacion.radio_marcador }};
+
+    const map = L.map('map').setView([latitud_publicacion, longitud_publicacion], 16);
+
+    L.tileLayer('https://api.maptiler.com/maps/streets-v2/256/{z}/{x}/{y}.png?key=EdWFsXtwOisU8uwq86cZ', {
+      maxZoom: 19,
+      minZoom: 1,
+      attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'}).addTo(map);
+    
+    zona = L.circle([latitud_publicacion, longitud_publicacion], {
+        radius: radio_publicacion,
+        color: 'lightblue',
+        fillColor: 'lightblue',
+        fillOpacity: 0.5
+    }).addTo(map);
+</script>
 {% endblock %}

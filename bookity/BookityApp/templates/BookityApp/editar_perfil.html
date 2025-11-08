@@ -6,6 +6,10 @@
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+    <div class="mb-3">
+      <span id="radio_valor">{{ form.instance.radio_marcador|default:500 }}</span>
+      <p>Esta ubicación se utiliza como defecto al publicar o acceder a un mapa. Puede ser editada en cualquier momento y es solo referencial.</p>
+    </div>
     <div id="map" style="height: 400px;"></div>
     <button type="submit">Guardar cambios</button>
 </form>
@@ -17,6 +21,17 @@
 <script>
     const latitud_defecto = {{ user.perfil.latitud_defecto|default:"null" }};
     const longitud_defecto = {{ user.perfil.longitud_defecto|default:"null" }};
+
+    const slider = document.getElementById("id_radio_marcador");
+    const output = document.getElementById("radio_valor");
+
+    if (slider && output) {
+        output.textContent = slider.value;
+        slider.addEventListener("input", () => {
+            output.textContent = slider.value;
+            window.dispatchEvent(new CustomEvent('cambioRadio', { detail: { value: slider.value } }));
+        });
+    }
 </script>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />

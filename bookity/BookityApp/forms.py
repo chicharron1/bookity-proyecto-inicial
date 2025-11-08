@@ -6,19 +6,35 @@ from .models import Publicacion, Perfil, Comentario
 class PublicacionForm(forms.ModelForm):
     class Meta:
         model = Publicacion
-        fields = ['titulo', 'descripcion', 'contacto', 'tipo', 'ubicacion', 'latitud', 'longitud']
+        fields = ['titulo', 'descripcion', 'contacto', 'tipo', 'ubicacion', 'latitud', 'longitud', 'radio_marcador']
         widgets = {
             'latitud': forms.HiddenInput(),
             'longitud': forms.HiddenInput(),
+            'radio_marcador': forms.NumberInput(attrs={
+                'type': 'range',
+                'min': '38',
+                'max': '500',
+                'step': '22',
+                'class': 'form-range',
+                'id': 'id_radio_marcador',
+            }),
         }
 
 class PerfilForm(forms.ModelForm):
     class Meta:
         model = Perfil
-        fields = ['latitud_defecto', 'longitud_defecto']
+        fields = ['latitud_defecto', 'longitud_defecto', 'radio_marcador_defecto']
         widgets = {
             'latitud_defecto': forms.HiddenInput(),
             'longitud_defecto': forms.HiddenInput(),
+            'radio_marcador_defecto': forms.NumberInput(attrs={
+                'type': 'range',
+                'min': '38',
+                'max': '500',
+                'step': '22',
+                'class': 'form-range',
+                'id': 'id_radio_marcador',
+            }),
         }
         
 class ComentarioForm(forms.ModelForm):

@@ -34,6 +34,21 @@
             </form>
         {% endif %}
     </div>
+
+    <div class="sobre_autor_seccion">
+        <h2 style="text-align: center; font-family: 'inder', sans-serif;">Sobre el Autor</h2>
+        <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Usuario:</strong> {{ publicacion.user.username }}</p>
+        <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Nivel:</strong> {{ publicacion.user.perfil.nivel_usuario }}</p>
+        <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Puntaje:</strong> {{ publicacion.user.perfil.puntaje_usuario }}</p>
+        <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Calificación Promedio:</strong> 
+            {% if publicacion.user.perfil.promedio_calificaciones %}
+                {{ publicacion.user.perfil.promedio_calificaciones|floatformat:2 }}
+            {% else %}
+                Sin calificaciones aún
+            {% endif %}
+        </p>
+    </div>
+
     <div class="comentarios_seccion">
         <h2 style="text-align: center; font-family: 'inder', sans-serif;">Comentarios</h2>
 

@@ -16,20 +16,27 @@
             <p><strong>Ubicación:</strong> {{ publicacion.ubicacion }}</p>
             <p><strong>Fecha de publicación:</strong> {{ publicacion.fecha_publicacion }}</p>
         </div>
-    {% if publicacion.calificacion %}
-        <p><strong>Calificación:</strong> {{ publicacion.calificacion }}</p>
-    {% endif %}
+
+        {% if user == publicacion.trato_cerrado_con %}
+            {% if publicacion.calificacion %}
+                <p><strong>Calificación:</strong> {{ publicacion.calificacion }}</p>
+                <form method="post" action="{% url 'eliminar_calificacion' publicacion.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Eliminar Calificación</button>
+                </form>
+            {% endif %}
+            <form method="post" action="{% url 'calificar_usuario' publicacion.id %}">
+                {% csrf_token %}
+                <input type="number" id="calificacion" name="calificacion" min="1" max="5" required>
+                <button type="submit">
+                    {% if publicacion.calificacion %}Actualizar Calificación{% else %}Calificar{% endif %}
+                </button>
+            </form>
+        {% endif %}
     </div>
     <div class="comentarios_seccion">
         <h2 style="text-align: center; font-family: 'inder', sans-serif;">Comentarios</h2>
 
-        {% if user == publicacion.trato_cerrado_con and not publicacion.calificacion %}
-            <form method="post" action="{% url 'calificar_usuario' publicacion.id %}">
-                {% csrf_token %}
-                <input type="number" id="calificacion" name="calificacion" min="1" max="5" required>
-                <button type="submit">Enviar Calificación</button>
-            </form>
-        {% endif %}
         {% if user != publicacion.user and ya_comento == False %}
         {% if ya_comento %}
             <p>Ya has comentado en esta publicación.</p>

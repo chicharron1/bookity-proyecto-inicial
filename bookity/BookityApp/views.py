@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, logout, login as auth_login
 from .forms import PublicacionForm, PerfilForm, ComentarioForm, CalificacionForm
 from .models import Publicacion, Perfil, Comentario
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Avg
 
 def registro(request):
     mensaje_error = ''
@@ -111,7 +111,7 @@ def detalle(request, publicacion_id):
 
         if 'calificacion' in request.POST and calificacion_form.is_valid():
             calificacion = calificacion_form.cleaned_data['calificacion']
-            publicacion.calificación = calificacion
+            publicacion.calificacion = calificacion
             publicacion.save()
             return redirect('detalle', publicacion_id=publicacion.id)
 
@@ -146,6 +146,7 @@ def eliminar_publicacion(request, publicacion_id):
         publicacion.user.perfil.save()
         publicacion.user.perfil.actualizar_nivel()
         publicacion.delete()
+        actualizar_promedio_calificaciones(publicacion.user)
         return redirect('publicaciones')
 
 def cerrar_trato(request, publicacion_id, comentario_id):
@@ -170,6 +171,7 @@ def cancelar_trato(request, publicacion_id):
         perfil_usuario.save()
         perfil_usuario.actualizar_nivel()
         publicacion.save()
+        actualizar_promedio_calificaciones(publicacion.user)
         return redirect('detalle', publicacion_id=publicacion.id)
 
 @login_required
@@ -196,6 +198,7 @@ def editar_perfil(request):
 def calificar_usuario(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion, id=publicacion_id)
     autor = publicacion.user
+    ya_califico = publicacion.calificacion not in [None, 0]
     if request.method == 'POST':
         form = CalificacionForm(request.POST)
         if form.is_valid():
@@ -214,7 +217,44 @@ def calificar_usuario(request, publicacion_id):
             autor.perfil.save()
             autor.perfil.actualizar_nivel()
             publicacion.save()
+            actualizar_promedio_calificaciones(autor)
+            if not ya_califico:
+                request.user.perfil.puntaje_usuario += 10
+                request.user.perfil.save()
+                request.user.perfil.actualizar_nivel()
             return redirect('detalle', publicacion_id=publicacion.id)
     else:
         form = CalificacionForm()
     return render(request, 'BookityApp/calificar_usuario.html', {'form': form, 'publicacion': publicacion})
+
+@login_required
+def eliminar_calificacion(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion, id=publicacion_id)
+    autor = publicacion.user
+    if request.method == 'POST':
+        calificacion_anterior = publicacion.calificacion
+        if calificacion_anterior:
+            if calificacion_anterior == 1:
+                autor.perfil.puntaje_usuario += 8
+            if calificacion_anterior == 2:
+                autor.perfil.puntaje_usuario += 4
+            if calificacion_anterior == 3:
+                autor.perfil.puntaje_usuario -= 2
+            if calificacion_anterior == 4:
+                autor.perfil.puntaje_usuario -= 6
+            if calificacion_anterior == 5:
+                autor.perfil.puntaje_usuario -= 10
+            autor.perfil.save()
+            autor.perfil.actualizar_nivel()
+            publicacion.calificacion = None
+            publicacion.save()
+            actualizar_promedio_calificaciones(autor)
+            request.user.perfil.puntaje_usuario -= 10
+            request.user.perfil.save()
+            request.user.perfil.actualizar_nivel()
+        return redirect('detalle', publicacion_id=publicacion.id)
+
+def actualizar_promedio_calificaciones(user):
+    perfil = Perfil.objects.get(user=user)
+    perfil.promedio_calificaciones = Publicacion.objects.filter(user=user, calificacion__isnull=False).aggregate(Avg('calificacion'))['calificacion__avg']
+    perfil.save()

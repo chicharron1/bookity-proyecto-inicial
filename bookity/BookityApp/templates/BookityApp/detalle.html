@@ -85,7 +85,7 @@
             {% endif %}
             {% for comentario in publicacion.comentarios.all %}
                 <div class="comentario">
-                    <p><strong>{{ comentario.user.username }}:</strong> {{ comentario.texto }}</p>
+                    <p><a href="{% url 'usuarios_perfil' comentario.user.username %}"><strong>{{ comentario.user.username }}</a>:</strong> {{ comentario.texto }}</p>
                     <p><em>Publicado el {{ comentario.fecha_comentario }}</em></p>
                     {% if comentario.user == user %}
                         <form method="post" action="{% url 'eliminar_comentario' comentario.id %}">

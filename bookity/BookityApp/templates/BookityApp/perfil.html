@@ -14,7 +14,7 @@
 {% if usuarios_seguidos %}
     <ul>
     {% for seguido in usuarios_seguidos %}
-        <li>{{ seguido.user.username }}</li>
+        <li><a href="{% url 'usuarios_perfil' seguido.user.username %}">{{ seguido.user.username }}</a></li>
     {% endfor %}
     </ul>
 {% else %}

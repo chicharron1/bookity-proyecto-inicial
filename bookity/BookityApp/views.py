@@ -264,4 +264,18 @@ def usuarios_perfil(request, username):
     perfil = get_object_or_404(Perfil, user=usuario)
     publicaciones_cerradas = Publicacion.objects.filter(user=usuario, estado='Cerrado').order_by('-fecha_publicacion')
     publicaciones_disponibles = Publicacion.objects.filter(user=usuario, estado='Disponible').order_by('-fecha_publicacion')
-    return render(request, 'BookityApp/usuarios_perfil.html', {'usuario': usuario, 'perfil': perfil, 'publicaciones_cerradas': publicaciones_cerradas, 'publicaciones_disponibles': publicaciones_disponibles})
+    usuario_logeado = get_object_or_404(User, username=request.user.username)
+    
+    siguiendo = perfil in usuario_logeado.perfil.usuarios_seguidos.all()
+
+    if request.method == "POST":
+        accion = request.POST.get("accion")
+
+        if accion == "seguir":
+            usuario_logeado.perfil.seguir_usuario(usuario)
+        elif accion == "dejar_de_seguir":
+            usuario_logeado.perfil.dejar_de_seguir_usuario(usuario)
+
+        return redirect("usuarios_perfil", username=username)
+
+    return render(request, 'BookityApp/usuarios_perfil.html', {'usuario': usuario, 'perfil': perfil, 'publicaciones_cerradas': publicaciones_cerradas, 'publicaciones_disponibles': publicaciones_disponibles, 'siguiendo': siguiendo})

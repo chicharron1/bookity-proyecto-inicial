@@ -13,6 +13,16 @@
             Sin calificaciones aún
         {% endif %}
     </p>
+    {% if usuario != request.user %}
+        <form method="post">
+            {% csrf_token %}
+            {% if siguiendo %}
+                <button type="submit" name="accion" value="dejar_de_seguir">Dejar de Seguir</button>
+            {% else %}
+                <button type="submit" name="accion" value="seguir">Seguir</button>
+            {% endif %}
+        </form>
+    {% endif %}
 </div>
 
 <div class="publicaciones_perfil">

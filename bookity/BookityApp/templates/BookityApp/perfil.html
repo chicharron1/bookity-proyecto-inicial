@@ -4,12 +4,13 @@
 <h2 style="text-align: center; font-family: 'inder', sans-serif;">{{ user.username }}</h2>
 <p><strong>Nivel:</strong> {{ perfil.nivel_usuario }}</p>
 <p><strong>Puntaje:</strong> {{ perfil.puntaje_usuario }}</p>
-<p><strong>Calificación Promedio:</strong> 
+<p><strong>Calificación Promedio:</strong></p>
 {% if perfil.promedio_calificaciones %}
     {{ perfil.promedio_calificaciones|floatformat:2 }}
 {% else %}
     Sin calificaciones aún
 {% endif %}
+<p><strong>Usuarios Seguidos:</strong> {{ perfil.usuarios_seguidos.count }}</p>
 
 <a href="{% url 'editar_perfil' %}">Editar Perfil</a>
 

@@ -258,3 +258,10 @@ def actualizar_promedio_calificaciones(user):
     perfil = Perfil.objects.get(user=user)
     perfil.promedio_calificaciones = Publicacion.objects.filter(user=user, calificacion__isnull=False).aggregate(Avg('calificacion'))['calificacion__avg']
     perfil.save()
+
+def usuarios_perfil(request, username):
+    usuario = get_object_or_404(User, username=username)
+    perfil = get_object_or_404(Perfil, user=usuario)
+    publicaciones_cerradas = Publicacion.objects.filter(user=usuario, estado='Cerrado').order_by('-fecha_publicacion')
+    publicaciones_disponibles = Publicacion.objects.filter(user=usuario, estado='Disponible').order_by('-fecha_publicacion')
+    return render(request, 'BookityApp/usuarios_perfil.html', {'usuario': usuario, 'perfil': perfil, 'publicaciones_cerradas': publicaciones_cerradas, 'publicaciones_disponibles': publicaciones_disponibles})

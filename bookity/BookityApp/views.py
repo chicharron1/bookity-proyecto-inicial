@@ -76,12 +76,19 @@ def publicar(request):
 def publicaciones(request):
     publicaciones = Publicacion.objects.filter(estado='Disponible').order_by('-fecha_publicacion')
     query = request.GET.get('q')
+    filtro_seguidos = request.GET.get('filtro-seguidos')
     tipo_filtro = request.GET.get('tipo_filtro')
+
     if tipo_filtro == 'Intercambios':
         publicaciones = publicaciones.filter(tipo='Intercambio')
     elif tipo_filtro == 'Donaciones':
         publicaciones = publicaciones.filter(tipo='Donación')
     
+    if filtro_seguidos and request.user.is_authenticated:
+        perfil_usuario = Perfil.objects.get(user=request.user)
+        usuarios_seguidos = perfil_usuario.usuarios_seguidos.all()
+        publicaciones = publicaciones.filter(user__in=[perfil.user for perfil in usuarios_seguidos])
+
     if query:
         publicaciones = publicaciones.filter(
             Q(titulo__icontains=query) | Q(descripcion__icontains=query)

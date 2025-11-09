@@ -15,6 +15,10 @@
           <option value="Intercambios">Intercambios</option>
           <option value="Donaciones">Donaciones</option>
       </select>
+      <label>
+        <input type="checkbox" name="filtro-seguidos" value="1" {% if request.GET.solo_seguidos %}checked{% endif %}>
+        Solo usuarios que sigo
+      </label>
       <button type="submit">Buscar</button>
   </form>
 </div>
@@ -36,6 +40,7 @@
               <h2>{{ publicacion.titulo }}</h2>
               <p><strong>Autor:</strong> {{ publicacion.user.username }}</p>
               <p>{{ publicacion.descripcion|truncatechars:30 }}</p>
+              <p><strong>Tipo:</strong> {{ publicacion.tipo }}</p>
               <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
               <div>
                 <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>

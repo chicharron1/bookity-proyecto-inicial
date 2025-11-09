@@ -92,8 +92,10 @@ def publicaciones(request):
 
 def perfil(request):
     publicaciones = Publicacion.objects.filter(user=request.user).order_by('-fecha_publicacion')
+    perfil = Perfil.objects.get(user=request.user)
+    usuarios_seguidos = perfil.usuarios_seguidos.all()
     return render(request, 'BookityApp/perfil.html', {
-        'publicaciones': publicaciones,'perfil': Perfil.objects.get(user=request.user)
+        'publicaciones': publicaciones,'perfil': perfil,'usuarios_seguidos': usuarios_seguidos
     })
 
 def detalle(request, publicacion_id):
@@ -267,14 +269,14 @@ def usuarios_perfil(request, username):
     usuario_logeado = get_object_or_404(User, username=request.user.username)
     
     siguiendo = perfil in usuario_logeado.perfil.usuarios_seguidos.all()
-
+    
     if request.method == "POST":
         accion = request.POST.get("accion")
 
         if accion == "seguir":
-            usuario_logeado.perfil.seguir_usuario(usuario)
+            usuario_logeado.perfil.seguir_usuario(perfil)
         elif accion == "dejar_de_seguir":
-            usuario_logeado.perfil.dejar_de_seguir_usuario(usuario)
+            usuario_logeado.perfil.dejar_de_seguir_usuario(perfil)
 
         return redirect("usuarios_perfil", username=username)
 

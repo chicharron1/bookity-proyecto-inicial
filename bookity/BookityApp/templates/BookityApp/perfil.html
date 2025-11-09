@@ -10,7 +10,16 @@
 {% else %}
     Sin calificaciones aún
 {% endif %}
-<p><strong>Usuarios Seguidos:</strong> {{ perfil.usuarios_seguidos.count }}</p>
+<p><strong>Usuarios Seguidos:</strong></p>
+{% if usuarios_seguidos %}
+    <ul>
+    {% for seguido in usuarios_seguidos %}
+        <li>{{ seguido.user.username }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No sigues a ningún usuario.</p>
+{% endif %}
 
 <a href="{% url 'editar_perfil' %}">Editar Perfil</a>
 

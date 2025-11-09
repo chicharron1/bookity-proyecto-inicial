@@ -39,11 +39,11 @@ class Perfil(models.Model):
     usuarios_seguidos = models.ManyToManyField('self', related_name='seguidores', blank=True)
 
     def seguir_usuario(self, usuario):
-        self.usuarios_seguidos.add(usuario.perfil)
+        self.usuarios_seguidos.add(usuario)
         self.save()
     
     def dejar_de_seguir_usuario(self, usuario):
-        self.usuarios_seguidos.remove(usuario.perfil)
+        self.usuarios_seguidos.remove(usuario)
         self.save()
 
     def actualizar_promedio_calificaciones(self):

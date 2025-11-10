@@ -8,6 +8,11 @@ class PublicacionForm(forms.ModelForm):
         model = Publicacion
         fields = ['titulo', 'descripcion', 'contacto', 'tipo', 'ubicacion', 'latitud', 'longitud', 'radio_marcador']
         widgets = {
+            'descripcion': forms.Textarea(
+                attrs={
+                    'style': 'resize: none;'
+                },
+            ),
             'latitud': forms.HiddenInput(),
             'longitud': forms.HiddenInput(),
             'radio_marcador': forms.NumberInput(attrs={
@@ -18,6 +23,11 @@ class PublicacionForm(forms.ModelForm):
                 'class': 'form-range',
                 'id': 'id_radio_marcador',
             }),
+            'resena': forms.Textarea(
+                attrs={
+                    'required': False
+                }
+            )
         }
 
 class PerfilForm(forms.ModelForm):
@@ -53,3 +63,7 @@ class EditarPerfilForm(forms.ModelForm):
 
 class CalificacionForm(forms.Form):
     calificacion = forms.IntegerField(min_value=1, max_value=5, label='Calificación (1-5)')
+
+class ResenaForm(forms.Form):
+    calificacion = forms.IntegerField()
+    descripcion = forms.TextInput

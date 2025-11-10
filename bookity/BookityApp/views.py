@@ -74,7 +74,7 @@ def publicar(request):
     return render(request, 'BookityApp/publicar.html', {'form': form})
 
 def publicaciones(request):
-    publicaciones = Publicacion.objects.filter(estado='Disponible').order_by('-fecha_publicacion')
+    publicaciones = Publicacion.objects.all().filter(estado='Disponible').order_by('-fecha_publicacion')
     query = request.GET.get('q')
     filtro_seguidos = request.GET.get('filtro-seguidos')
     tipo_filtro = request.GET.get('tipo_filtro')
@@ -271,7 +271,7 @@ def actualizar_promedio_calificaciones(user):
 def usuarios_perfil(request, username):
     usuario = get_object_or_404(User, username=username)
     perfil = get_object_or_404(Perfil, user=usuario)
-    publicaciones_cerradas = Publicacion.objects.filter(user=usuario, estado='Cerrado').order_by('-fecha_publicacion')
+    publicaciones_cerradas = Publicacion.objects.all().filter(user=usuario, estado='Cerrado').order_by('-fecha_publicacion')
     publicaciones_disponibles = Publicacion.objects.filter(user=usuario, estado='Disponible').order_by('-fecha_publicacion')
     usuario_logeado = get_object_or_404(User, username=request.user.username)
     

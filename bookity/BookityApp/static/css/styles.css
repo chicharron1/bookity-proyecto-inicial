@@ -98,7 +98,7 @@ form {
     flex-direction: column;
     align-items: center;   
     justify-content: center; 
-    min-height: 50vh;     
+    min-height: 25vh;     
     gap: 0px;             
     background-color: white;
   }
@@ -200,7 +200,7 @@ button:hover,
 
 /* Caja de scroll para publicaciones */
 .scroll-box {
-  height: 500px;
+  height: 250px;
   width: 350px;
   overflow-y: auto; 
   border: 2px solid #ccc;
@@ -222,7 +222,7 @@ button:hover,
 
 /* Mapa */
 #map {
-  height: 500px;
+  height: 300px;
   width: 900px;
 }
 

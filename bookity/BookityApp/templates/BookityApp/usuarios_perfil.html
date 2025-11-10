@@ -1,0 +1,68 @@
+{% extends 'BookityApp/base.html' %}
+
+{% block content %}
+<h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;font-size:50px;padding-top: 50px;">Perfil de {{ usuario.username }}</h1>
+<div class="perfil_usuario">
+    <p><strong>Usuario:</strong> {{ usuario.username }}</p>
+    <p><strong>Nivel:</strong> {{ perfil.nivel_usuario }}</p>
+    <p><strong>Puntaje:</strong> {{ perfil.puntaje_usuario }}</p>
+    <p><strong>Calificación Promedio:</strong> 
+        {% if perfil.promedio_calificaciones %}
+            {{ perfil.promedio_calificaciones|floatformat:2 }}
+        {% else %}
+            Sin calificaciones aún
+        {% endif %}
+    </p>
+    {% if usuario != request.user %}
+        <form method="post">
+            {% csrf_token %}
+            {% if siguiendo %}
+                <button type="submit" name="accion" value="dejar_de_seguir">Dejar de Seguir</button>
+            {% else %}
+                <button type="submit" name="accion" value="seguir">Seguir</button>
+            {% endif %}
+        </form>
+    {% endif %}
+</div>
+
+<div class="publicaciones_perfil">
+    <h2 style="text-align: center; font-family: 'inder', sans-serif;">Publicaciones Disponibles</h2>
+    {% if publicaciones_disponibles %}
+        <div class="scroll-box">
+            {% for publicacion in publicaciones_disponibles %}
+                <div class="publicacion">
+                    <h3>{{ publicacion.titulo }}</h3>
+                    <p>{{ publicacion.descripcion|truncatechars:50 }}</p>
+                    <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
+                    <div>
+                        <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No hay publicaciones disponibles.</p>
+    {% endif %}
+
+    <h2 style="text-align: center; font-family: 'inder', sans-serif; margin-top: 40px;">Publicaciones Cerradas</h2>
+    {% if publicaciones_cerradas %}
+        <div class="scroll-box">
+            {% for publicacion in publicaciones_cerradas %}
+                <div class="publicacion">
+                    <h3>{{ publicacion.titulo }}</h3>
+                    <p>{{ publicacion.descripcion|truncatechars:50 }}</p>
+                    <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
+                    {% if publicacion.calificacion %}
+                        <p><strong>Calificación:</strong> {{ publicacion.calificacion }}</p>
+                    {% endif %}
+                    <div>
+                        <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No hay publicaciones cerradas.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import inicio, login, registro, cerrar, publicar, publicaciones, perfil, detalle, eliminar_comentario, eliminar_publicacion, cerrar_trato, cancelar_trato
+from .views import inicio, login, registro, cerrar, publicar, publicaciones, perfil, detalle, eliminar_comentario, eliminar_publicacion, cerrar_trato, cancelar_trato, editar_perfil, eliminar_cuenta, calificar_usuario, eliminar_calificacion, usuarios_perfil
 
 urlpatterns = [
     path('', inicio, name='inicio'),
@@ -15,4 +15,9 @@ urlpatterns = [
     path('eliminar_publicacion/<int:publicacion_id>/', eliminar_publicacion, name='eliminar_publicacion'),
     path('cerrar_trato/<int:publicacion_id>/<int:comentario_id>/', cerrar_trato, name='cerrar_trato'),
     path('cancelar_trato/<int:publicacion_id>/', cancelar_trato, name='cancelar_trato'),
+    path('editar_perfil/', editar_perfil, name='editar_perfil'),
+    path('eliminar_cuenta/', eliminar_cuenta, name='eliminar_cuenta'),
+    path('calificar_usuario/<int:publicacion_id>/', calificar_usuario, name='calificar_usuario'),
+    path('eliminar_calificacion/<int:publicacion_id>/', eliminar_calificacion, name='eliminar_calificacion'),
+    path('usuario/<str:username>/', usuarios_perfil, name='usuarios_perfil'),
 ]

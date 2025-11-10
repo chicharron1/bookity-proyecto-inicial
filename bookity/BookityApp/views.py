@@ -2,12 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login as auth_login
-from .forms import PublicacionForm, PerfilForm, ComentarioForm
+from .forms import PublicacionForm, PerfilForm, ComentarioForm, CalificacionForm
 from .models import Publicacion, Perfil, Comentario
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q, Avg
 
 def registro(request):
-    contexto = {'titulo': 'Registrarse a Bookity'}
     mensaje_error = ''
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -17,7 +17,7 @@ def registro(request):
             perfil = perfil_form.save(commit=False)
             perfil.user = user
             perfil.save()
-            return render(request, 'BookityApp/registro.html', {'form': form, 'perfil_form': perfil_form, 'mensaje_error': ''})
+            return redirect('login')
         else:
             mensaje_error = "Inválido :("
     else:
@@ -51,8 +51,6 @@ def login(request):
 
     return render(request, 'BookityApp/login.html', {'form': form, 'mensaje_error': mensaje_error})
 
-
-
 def cerrar(request):
     logout(request)
     return redirect('inicio')
@@ -76,22 +74,56 @@ def publicar(request):
     return render(request, 'BookityApp/publicar.html', {'form': form})
 
 def publicaciones(request):
-    publicaciones = Publicacion.objects.all().order_by('-fecha_publicacion')
+    publicaciones = Publicacion.objects.filter(estado='Disponible').order_by('-fecha_publicacion')
+    query = request.GET.get('q')
+    filtro_seguidos = request.GET.get('filtro-seguidos')
+    tipo_filtro = request.GET.get('tipo_filtro')
+
+    if tipo_filtro == 'Intercambios':
+        publicaciones = publicaciones.filter(tipo='Intercambio')
+    elif tipo_filtro == 'Donaciones':
+        publicaciones = publicaciones.filter(tipo='Donación')
+    
+    if filtro_seguidos and request.user.is_authenticated:
+        perfil_usuario = Perfil.objects.get(user=request.user)
+        usuarios_seguidos = perfil_usuario.usuarios_seguidos.all()
+        publicaciones = publicaciones.filter(user__in=[perfil.user for perfil in usuarios_seguidos])
+
+    if query:
+        publicaciones = publicaciones.filter(
+            Q(titulo__icontains=query) | Q(descripcion__icontains=query)
+        )
     return render(request, 'BookityApp/publicaciones.html', {
         'publicaciones': publicaciones
     })
 
 def perfil(request):
     publicaciones = Publicacion.objects.filter(user=request.user).order_by('-fecha_publicacion')
+    perfil = Perfil.objects.get(user=request.user)
+    usuarios_seguidos = perfil.usuarios_seguidos.all()
     return render(request, 'BookityApp/perfil.html', {
-        'publicaciones': publicaciones,'perfil': Perfil.objects.get(user=request.user)
+        'publicaciones': publicaciones,'perfil': perfil,'usuarios_seguidos': usuarios_seguidos
     })
 
 def detalle(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion, id=publicacion_id)
     comentario_form = ComentarioForm()
+    calificacion_form = CalificacionForm()
+
+    ya_comento = False
+    if request.user.is_authenticated:
+        ya_comento = Comentario.objects.filter(publicacion=publicacion, user=request.user).exists()
+
     if request.method == 'POST':
         comentario_form = ComentarioForm(request.POST)
+        calificacion_form = CalificacionForm(request.POST)
+
+        if 'calificacion' in request.POST and calificacion_form.is_valid():
+            calificacion = calificacion_form.cleaned_data['calificacion']
+            publicacion.calificacion = calificacion
+            publicacion.save()
+            return redirect('detalle', publicacion_id=publicacion.id)
+
         if comentario_form.is_valid():
             comentario = comentario_form.save(commit=False)
             comentario.user = request.user
@@ -102,7 +134,7 @@ def detalle(request, publicacion_id):
             return redirect('detalle', publicacion_id=publicacion.id)
     else:
         comentario_form = ComentarioForm()
-    return render(request, 'BookityApp/detalle.html', {'publicacion': publicacion, 'comentario_form': comentario_form})
+    return render(request, 'BookityApp/detalle.html', {'publicacion': publicacion, 'comentario_form': comentario_form, 'ya_comento': ya_comento, 'calificacion_form': calificacion_form})
 
 
 @login_required
@@ -123,6 +155,7 @@ def eliminar_publicacion(request, publicacion_id):
         publicacion.user.perfil.save()
         publicacion.user.perfil.actualizar_nivel()
         publicacion.delete()
+        actualizar_promedio_calificaciones(publicacion.user)
         return redirect('publicaciones')
 
 def cerrar_trato(request, publicacion_id, comentario_id):
@@ -147,4 +180,111 @@ def cancelar_trato(request, publicacion_id):
         perfil_usuario.save()
         perfil_usuario.actualizar_nivel()
         publicacion.save()
+        actualizar_promedio_calificaciones(publicacion.user)
         return redirect('detalle', publicacion_id=publicacion.id)
+
+@login_required
+def eliminar_cuenta(request):
+    if request.method == 'POST':
+        user = request.user
+        logout(request)
+        user.delete()
+        return redirect('registro')
+
+@login_required
+def editar_perfil(request):
+    perfil = get_object_or_404(Perfil, user=request.user)
+    if request.method == 'POST':
+        form = PerfilForm(request.POST, instance=perfil)
+        if form.is_valid():
+            form.save()
+            return redirect('perfil')
+    else:
+        form = PerfilForm(instance=perfil)
+    return render(request, 'BookityApp/editar_perfil.html', {'form': form})
+
+@login_required
+def calificar_usuario(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion, id=publicacion_id)
+    autor = publicacion.user
+    ya_califico = publicacion.calificacion not in [None, 0]
+    if request.method == 'POST':
+        form = CalificacionForm(request.POST)
+        if form.is_valid():
+            calificacion = form.cleaned_data['calificacion']
+            publicacion.calificacion = calificacion
+            if calificacion == 1:
+                autor.perfil.puntaje_usuario -= 8
+            if calificacion == 2:
+                autor.perfil.puntaje_usuario -= 4
+            if calificacion == 3:
+                autor.perfil.puntaje_usuario += 2
+            if calificacion == 4:
+                autor.perfil.puntaje_usuario += 6
+            if calificacion == 5:
+                autor.perfil.puntaje_usuario += 10
+            autor.perfil.save()
+            autor.perfil.actualizar_nivel()
+            publicacion.save()
+            actualizar_promedio_calificaciones(autor)
+            if not ya_califico:
+                request.user.perfil.puntaje_usuario += 10
+                request.user.perfil.save()
+                request.user.perfil.actualizar_nivel()
+            return redirect('detalle', publicacion_id=publicacion.id)
+    else:
+        form = CalificacionForm()
+    return render(request, 'BookityApp/calificar_usuario.html', {'form': form, 'publicacion': publicacion})
+
+@login_required
+def eliminar_calificacion(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion, id=publicacion_id)
+    autor = publicacion.user
+    if request.method == 'POST':
+        calificacion_anterior = publicacion.calificacion
+        if calificacion_anterior:
+            if calificacion_anterior == 1:
+                autor.perfil.puntaje_usuario += 8
+            if calificacion_anterior == 2:
+                autor.perfil.puntaje_usuario += 4
+            if calificacion_anterior == 3:
+                autor.perfil.puntaje_usuario -= 2
+            if calificacion_anterior == 4:
+                autor.perfil.puntaje_usuario -= 6
+            if calificacion_anterior == 5:
+                autor.perfil.puntaje_usuario -= 10
+            autor.perfil.save()
+            autor.perfil.actualizar_nivel()
+            publicacion.calificacion = None
+            publicacion.save()
+            actualizar_promedio_calificaciones(autor)
+            request.user.perfil.puntaje_usuario -= 10
+            request.user.perfil.save()
+            request.user.perfil.actualizar_nivel()
+        return redirect('detalle', publicacion_id=publicacion.id)
+
+def actualizar_promedio_calificaciones(user):
+    perfil = Perfil.objects.get(user=user)
+    perfil.promedio_calificaciones = Publicacion.objects.filter(user=user, calificacion__isnull=False).aggregate(Avg('calificacion'))['calificacion__avg']
+    perfil.save()
+
+def usuarios_perfil(request, username):
+    usuario = get_object_or_404(User, username=username)
+    perfil = get_object_or_404(Perfil, user=usuario)
+    publicaciones_cerradas = Publicacion.objects.filter(user=usuario, estado='Cerrado').order_by('-fecha_publicacion')
+    publicaciones_disponibles = Publicacion.objects.filter(user=usuario, estado='Disponible').order_by('-fecha_publicacion')
+    usuario_logeado = get_object_or_404(User, username=request.user.username)
+    
+    siguiendo = perfil in usuario_logeado.perfil.usuarios_seguidos.all()
+    
+    if request.method == "POST":
+        accion = request.POST.get("accion")
+
+        if accion == "seguir":
+            usuario_logeado.perfil.seguir_usuario(perfil)
+        elif accion == "dejar_de_seguir":
+            usuario_logeado.perfil.dejar_de_seguir_usuario(perfil)
+
+        return redirect("usuarios_perfil", username=username)
+
+    return render(request, 'BookityApp/usuarios_perfil.html', {'usuario': usuario, 'perfil': perfil, 'publicaciones_cerradas': publicaciones_cerradas, 'publicaciones_disponibles': publicaciones_disponibles, 'siguiendo': siguiendo})

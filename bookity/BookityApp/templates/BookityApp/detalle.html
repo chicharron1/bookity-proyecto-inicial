@@ -1,4 +1,8 @@
 {% extends 'BookityApp/base.html' %}
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+{% endblock %}
 {% block content %}
 <div>
     <div class="publicacion_detalle">
@@ -16,10 +20,52 @@
             <p><strong>Ubicación:</strong> {{ publicacion.ubicacion }}</p>
             <p><strong>Fecha de publicación:</strong> {{ publicacion.fecha_publicacion }}</p>
         </div>
+
+        {% if user == publicacion.trato_cerrado_con %}
+            {% if publicacion.calificacion %}
+                <p><strong>Calificación:</strong> {{ publicacion.calificacion }}</p>
+                <form method="post" action="{% url 'eliminar_calificacion' publicacion.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Eliminar Calificación</button>
+                </form>
+            {% endif %}
+            <form method="post" action="{% url 'calificar_usuario' publicacion.id %}">
+                {% csrf_token %}
+                <input type="number" id="calificacion" name="calificacion" min="1" max="5" required>
+                <button type="submit">
+                    {% if publicacion.calificacion %}Actualizar Calificación{% else %}Calificar{% endif %}
+                </button>
+            </form>
+        {% endif %}
     </div>
+
+    <div class="mapa_detalle">
+        <h2 style="text-align: center; font-family: 'inder', sans-serif;">Rango de entrega</h2>
+        <div id="map" style="height: 400px; margin-top: 20px; width:400px;"></div>
+    </div>
+
+    <div class="sobre_autor_seccion">
+        <h2 style="text-align: center; font-family: 'inder', sans-serif;">Sobre el Autor</h2>
+        <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Usuario:</strong> {{ publicacion.user.username }}</p>
+        <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Nivel:</strong> {{ publicacion.user.perfil.nivel_usuario }}</p>
+        <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Puntaje:</strong> {{ publicacion.user.perfil.puntaje_usuario }}</p>
+        <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Calificación Promedio:</strong> 
+            {% if publicacion.user.perfil.promedio_calificaciones %}
+                {{ publicacion.user.perfil.promedio_calificaciones|floatformat:2 }}
+            {% else %}
+                Sin calificaciones aún
+            {% endif %}
+        </p>
+        <a href="{% url 'usuarios_perfil' publicacion.user.username %}">Ver Perfil Completo</a>
+    </div>
+
     <div class="comentarios_seccion">
         <h2 style="text-align: center; font-family: 'inder', sans-serif;">Comentarios</h2>
-        {% if user != publicacion.user %}
+
+        {% if user != publicacion.user and ya_comento == False %}
+        {% if ya_comento %}
+            <p>Ya has comentado en esta publicación.</p>
+        {% endif %}
         {% if publicacion.estado == 'Cerrado' %}
             <p>Los comentarios están deshabilitados para esta publicación porque ya se cerró un trato.</p>
         {% else %}
@@ -31,9 +77,15 @@
         {% endif %}
         {% endif %}
         {% if publicacion.comentarios.all %}
+            {% if publicacion.user == user and publicacion.estado == 'Cerrado' %}
+                <form method="post" action="{% url 'cancelar_trato' publicacion.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Cancelar Trato</button>
+                </form>
+            {% endif %}
             {% for comentario in publicacion.comentarios.all %}
                 <div class="comentario">
-                    <p><strong>{{ comentario.user.username }}:</strong> {{ comentario.texto }}</p>
+                    <p><a href="{% url 'usuarios_perfil' comentario.user.username %}"><strong>{{ comentario.user.username }}</a>:</strong> {{ comentario.texto }}</p>
                     <p><em>Publicado el {{ comentario.fecha_comentario }}</em></p>
                     {% if comentario.user == user %}
                         <form method="post" action="{% url 'eliminar_comentario' comentario.id %}">
@@ -50,12 +102,6 @@
                     {% if publicacion.trato_cerrado_con == comentario.user %}
                         <p>¡Trato hecho!</p>
                     {% endif %}
-                    {% if publicacion.user == user and publicacion.estado == 'Cerrado' %}
-                        <form method="post" action="{% url 'cancelar_trato' publicacion.id %}">
-                            {% csrf_token %}
-                            <button type="submit">Cancelar Trato</button>
-                        </form>
-                    {% endif %}
                 </div>
             {% endfor %}
         {% else %}
@@ -63,4 +109,26 @@
         {% endif %}
     </div>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const latitud_publicacion = {{ publicacion.latitud }};
+    const longitud_publicacion = {{ publicacion.longitud }};
+    const radio_publicacion = {{ publicacion.radio_marcador }};
+
+    const map = L.map('map').setView([latitud_publicacion, longitud_publicacion], 16);
+
+    L.tileLayer('https://api.maptiler.com/maps/streets-v2/256/{z}/{x}/{y}.png?key=EdWFsXtwOisU8uwq86cZ', {
+      maxZoom: 19,
+      minZoom: 1,
+      attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'}).addTo(map);
+    
+    zona = L.circle([latitud_publicacion, longitud_publicacion], {
+        radius: radio_publicacion,
+        color: 'lightblue',
+        fillColor: 'lightblue',
+        fillOpacity: 0.5
+    }).addTo(map);
+</script>
 {% endblock %}

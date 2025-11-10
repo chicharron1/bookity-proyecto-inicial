@@ -4,6 +4,25 @@
 <h2 style="text-align: center; font-family: 'inder', sans-serif;">{{ user.username }}</h2>
 <p><strong>Nivel:</strong> {{ perfil.nivel_usuario }}</p>
 <p><strong>Puntaje:</strong> {{ perfil.puntaje_usuario }}</p>
+<p><strong>Calificación Promedio:</strong></p>
+{% if perfil.promedio_calificaciones %}
+    {{ perfil.promedio_calificaciones|floatformat:2 }}
+{% else %}
+    Sin calificaciones aún
+{% endif %}
+<p><strong>Usuarios Seguidos:</strong></p>
+{% if usuarios_seguidos %}
+    <ul>
+    {% for seguido in usuarios_seguidos %}
+        <li><a href="{% url 'usuarios_perfil' seguido.user.username %}">{{ seguido.user.username }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No sigues a ningún usuario.</p>
+{% endif %}
+
+<a href="{% url 'editar_perfil' %}">Editar Perfil</a>
+
 <div class="contenedor-publicaciones">
     <h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;">Mis Publicaciones</h1>
     {% if publicaciones %}

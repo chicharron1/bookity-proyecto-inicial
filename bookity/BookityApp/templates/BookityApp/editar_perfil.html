@@ -2,22 +2,25 @@
 {% load static %}
 
 {% block content %}
-<h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;">Publicar Anuncio</h1>
+<h1>Editar Perfil</h1>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <div class="mb-3">
       <span id="radio_valor">{{ form.instance.radio_marcador|default:500 }}</span>
-      <p>Radio de entrega. Esta ubicación es referencial, por favor no revele información delicada.</p>
+      <p>Esta ubicación se utiliza como defecto al publicar o acceder a un mapa. Puede ser editada en cualquier momento y es solo referencial.</p>
     </div>
     <div id="map" style="height: 400px;"></div>
-    <button type="submit">Publicar</button>
+    <button type="submit">Guardar cambios</button>
+</form>
+<form method="post" action="{% url 'eliminar_cuenta' %}">
+    {% csrf_token %}
+    <button type="submit" style="margin-top:20px; background-color: red; color: white;">Eliminar Cuenta</button>
 </form>
 
 <script>
     const latitud_defecto = {{ user.perfil.latitud_defecto|default:"null" }};
     const longitud_defecto = {{ user.perfil.longitud_defecto|default:"null" }};
-    const radio_defecto = {{ user.perfil.radio_marcador_defecto|default:500 }};
 
     const slider = document.getElementById("id_radio_marcador");
     const output = document.getElementById("radio_valor");

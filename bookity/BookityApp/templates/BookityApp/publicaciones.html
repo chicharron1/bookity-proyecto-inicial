@@ -7,6 +7,22 @@
 {% endblock %}
 
 {% block content %}
+<div class="contenedor_busqueda">
+  <form method="get" action="{% url 'publicaciones' %}">
+      <input type="text" name="q" placeholder="Buscar publicaciones..." value="{{ request.GET.q }}">
+      <select name="tipo_filtro">
+          <option value="">Todos los tipos</option>
+          <option value="Intercambios">Intercambios</option>
+          <option value="Donaciones">Donaciones</option>
+      </select>
+      <label>
+        <input type="checkbox" name="filtro-seguidos" value="1" {% if request.GET.solo_seguidos %}checked{% endif %}>
+        Solo usuarios que sigo
+      </label>
+      <button type="submit">Buscar</button>
+  </form>
+</div>
+
 <!-- Contenedor para ambos títulos en la misma línea -->
 <div class="contenedor-titulos">
   <h1 class="titulo-seccion" style="margin-right: 0px;">Publicaciones</h1>
@@ -19,19 +35,23 @@
     {% if publicaciones %}
       <div class="scroll-box">
         {% for publicacion in publicaciones %}
-          <div class="publicacion">
-            <h2>{{ publicacion.titulo }}</h2>
-            <p><strong>Autor:</strong> {{ publicacion.user.username }}</p>
-            <p>{{ publicacion.descripcion|truncatechars:30 }}</p>
-            <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
-            <div>
-              <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
+          {% if publicacion.estado == 'Disponible' %}
+            <div class="publicacion">
+              <h2>{{ publicacion.titulo }}</h2>
+              <p><strong>Autor:</strong> {{ publicacion.user.username }}</p>
+              <p>{{ publicacion.descripcion|truncatechars:30 }}</p>
+              <p><strong>Tipo:</strong> {{ publicacion.tipo }}</p>
+              <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
+              <div>
+                <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
+              </div>
+              <button id="id_boton_ubicar_publicacion{{ publicacion.id }}">Ubicar en el mapa</button>
             </div>
-          </div>
+          {% endif %}
         {% endfor %}
       </div>
     {% else %}
-      <p>No hay publicaciones todavía.</p>
+      <p>No publicaciones encontradas.</p>
     {% endif %}
   </div>
   
@@ -52,13 +72,46 @@
 
   L.tileLayer('https://api.maptiler.com/maps/streets-v2/256/{z}/{x}/{y}.png?key=EdWFsXtwOisU8uwq86cZ', {
       maxZoom: 19,
+      minZoom: 1,
       attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'}).addTo(map);
   
   {% if publicaciones %}
     {% for publicacion in publicaciones %}
-      L.marker([{{ publicacion.latitud }}, {{ publicacion.longitud }}])
-      .addTo(map)
-      .bindPopup('<b>{{ publicacion.titulo }}</b><br>{{ publicacion.descripcion|truncatechars:65|escapejs }} <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>');
+      (function() {
+        let lat = parseFloat("{{ publicacion.latitud|default_if_none:0 }}");
+        let lng = parseFloat("{{ publicacion.longitud|default_if_none:0 }}");
+        let radio = parseFloat("{{ publicacion.radio_marcador|default_if_none:0 }}");
+
+        let marker = L.marker([lat, lng]).addTo(map);
+        marker.bindPopup('<b>{{ publicacion.titulo }}</b><br>{{ publicacion.descripcion|truncatechars:65|escapejs }} <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>');
+        
+        let tempCircle = null;
+        marker.on('popupopen', () => {
+          if (radio > 0) {
+            tempCircle = L.circle([lat, lng], {
+              radius: radio,
+              color: 'lightblue',
+              fillColor: 'lightblue',
+              fillOpacity: 0.25,
+              weight: 1
+            }).addTo(map);
+          }
+        });
+        marker.on('popupclose', () => {
+          if (tempCircle) {
+            map.removeLayer(tempCircle);
+            tempCircle = null;
+          }
+        });
+
+        const boton_ubicar = document.getElementById('id_boton_ubicar_publicacion{{ publicacion.id }}');
+        if (boton_ubicar) {
+          boton_ubicar.addEventListener('click', () => {
+            map.setView([lat, lng], 18);
+          });
+        }
+      })();
+
     {% endfor %}
   {% endif %}
 </script>

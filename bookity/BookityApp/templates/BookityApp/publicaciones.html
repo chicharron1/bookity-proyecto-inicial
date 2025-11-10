@@ -10,7 +10,7 @@
 <div class="contenedor_busqueda">
   <form method="get" action="{% url 'publicaciones' %}">
       <input type="text" name="q" placeholder="Buscar publicaciones..." value="{{ request.GET.q }}" style="width: 1000px;">
-      <select name="tipo_filtro">
+      <select name="tipo_filtro" style="margin-top:25px;">
           <option value="">Todos los tipos</option>
           <option value="Intercambios">Intercambios</option>
           <option value="Donaciones">Donaciones</option>

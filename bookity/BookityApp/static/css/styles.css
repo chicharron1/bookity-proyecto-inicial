@@ -246,14 +246,7 @@ img {
     margin-top: 0px;
     margin-bottom: 0px;
 }
-.contenedor_busqueda {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 0px;
-  margin-bottom: 0px;
-  height:200px;
-}
+
 .boton_busca {
     background-color: #adc178;
     color: white;

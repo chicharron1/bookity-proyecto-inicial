@@ -9,7 +9,7 @@
 {% block content %}
 <div class="contenedor_busqueda">
   <form method="get" action="{% url 'publicaciones' %}">
-      <input type="text" name="q" placeholder="Buscar publicaciones..." value="{{ request.GET.q }}">
+      <input type="text" name="q" placeholder="Buscar publicaciones..." value="{{ request.GET.q }}" style="width: 1000px;">
       <select name="tipo_filtro">
           <option value="">Todos los tipos</option>
           <option value="Intercambios">Intercambios</option>
@@ -19,7 +19,7 @@
         <input type="checkbox" name="filtro-seguidos" value="1" {% if request.GET.solo_seguidos %}checked{% endif %}>
         Solo usuarios que sigo
       </label>
-      <button type="submit">Buscar</button>
+      <button type="submit" class="boton_busca">Buscar</button>
   </form>
 </div>
 

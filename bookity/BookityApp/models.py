@@ -36,7 +36,7 @@ class Perfil(models.Model):
     puntaje_usuario = models.IntegerField(default=0)
     nivel_usuario = models.CharField(max_length=20, choices=[('Nuevo', 'Nuevo'), ('Medio', 'Medio'), ('KPro', 'KPro')], default='Nuevo')
     promedio_calificaciones = models.FloatField(default=0.0, null=True, blank=True)
-    usuarios_seguidos = models.ManyToManyField('self', related_name='seguidores', blank=True)
+    usuarios_seguidos = models.ManyToManyField('self', blank=True)
 
     def seguir_usuario(self, usuario):
         self.usuarios_seguidos.add(usuario)

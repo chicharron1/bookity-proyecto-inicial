@@ -7,15 +7,15 @@
 {% endblock %}
 
 {% block content %}
-<div class="contenedor_busqueda">
-  <form method="get" action="{% url 'publicaciones' %}">
-      <input type="text" name="q" placeholder="Buscar publicaciones..." value="{{ request.GET.q }}" style="width: 1000px;">
+<div class="contenedor_busqueda" style="height: 250px;">
+  <form method="get" action="{% url 'publicaciones' %}" style="margin-top:0px;">
+      <input type="text" name="q" placeholder="Buscar publicaciones..." value="{{ request.GET.q }}" style="width: 1400px;">
       <select name="tipo_filtro" style="margin-top:25px;">
           <option value="">Todos los tipos</option>
           <option value="Intercambios">Intercambios</option>
           <option value="Donaciones">Donaciones</option>
       </select>
-      <label>
+      <label style="align-self:center;">
         <input type="checkbox" name="filtro-seguidos" value="1" {% if request.GET.solo_seguidos %}checked{% endif %}>
         Solo usuarios que sigo
       </label>

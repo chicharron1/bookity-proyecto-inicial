@@ -46,7 +46,7 @@
 
     <div class="sobre_autor_seccion">
         <h2 style="text-align: center; font-family: 'inder', sans-serif;">Sobre el Autor</h2>
-        <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Usuario:</strong> {{ publicacion.user.username }}</p>
+        <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Usuario:</strong> </p> <a  href="{% url 'usuarios_perfil' publicacion.user.username %}">{{ publicacion.user.username }}</a>
         <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Nivel:</strong> {{ publicacion.user.perfil.nivel_usuario }}</p>
         <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Puntaje:</strong> {{ publicacion.user.perfil.puntaje_usuario }}</p>
         <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Calificación Promedio:</strong> 
@@ -56,7 +56,6 @@
                 Sin calificaciones aún
             {% endif %}
         </p>
-        <a href="{% url 'usuarios_perfil' publicacion.user.username %}">Ver Perfil Completo</a>
     </div>
 
     <div class="comentarios_seccion">

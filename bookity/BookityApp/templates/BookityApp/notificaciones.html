@@ -1,0 +1,11 @@
+{% extends 'BookityApp/base.html' %}
+
+{% block content %}
+{% if request.user.perfil.notificaciones.all %}
+    {% for notificacion in request.user.perfil.notificaciones.all %}
+        <div class="div-notificacion">
+            <p><strong>mensaje: </strong>{{notificacion.mensaje}}</p>
+        </div>
+    {% endfor %}
+{% endif %}
+{% endblock %}

@@ -291,3 +291,8 @@ def usuarios_perfil(request, username):
         return redirect("usuarios_perfil", username=username)
 
     return render(request, 'BookityApp/usuarios_perfil.html', {'usuario': usuario, 'perfil': perfil, 'publicaciones_cerradas': publicaciones_cerradas, 'publicaciones_disponibles': publicaciones_disponibles, 'siguiendo': siguiendo})
+
+def notificaciones(request):
+    usuario = request.user
+    notificaciones = usuario.perfil.notificaciones.all().order_by('-fecha')
+    return render(request, 'BookityApp/notificaciones.html', {'usuario': usuario, 'notificaciones': notificaciones})

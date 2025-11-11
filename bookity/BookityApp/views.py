@@ -168,6 +168,7 @@ def cerrar_trato(request, publicacion_id, comentario_id):
         perfil_usuario.puntaje_usuario += 20
         perfil_usuario.actualizar_nivel()
         publicacion.save()
+        Notificacion.objects.create(perfil=publicacion.trato_cerrado_con.perfil, mensaje=f"{request.user.username} Aceptó tu trato.", otro_perfil=perfil_usuario)
         return redirect('detalle', publicacion_id=publicacion.id)
 
 def cancelar_trato(request, publicacion_id):
@@ -181,6 +182,7 @@ def cancelar_trato(request, publicacion_id):
         perfil_usuario.actualizar_nivel()
         publicacion.save()
         actualizar_promedio_calificaciones(publicacion.user)
+        Notificacion.objects.create(perfil=publicacion.trato_cerrado_con.perfil, mensaje=f"{request.user.username} Canceló su trato.", otro_perfil=perfil_usuario)
         return redirect('detalle', publicacion_id=publicacion.id)
 
 @login_required
@@ -292,7 +294,20 @@ def usuarios_perfil(request, username):
 
     return render(request, 'BookityApp/usuarios_perfil.html', {'usuario': usuario, 'perfil': perfil, 'publicaciones_cerradas': publicaciones_cerradas, 'publicaciones_disponibles': publicaciones_disponibles, 'siguiendo': siguiendo})
 
+@login_required
 def notificaciones(request):
     usuario = request.user
     notificaciones = usuario.perfil.notificaciones.all().order_by('-fecha')
     return render(request, 'BookityApp/notificaciones.html', {'usuario': usuario, 'notificaciones': notificaciones})
+
+@login_required
+def eliminar_notificacion(request, id):
+    notificacion = get_object_or_404(Notificacion, id=id, perfil=request.user.perfil)
+    notificacion.delete()
+    return redirect('notificaciones')
+
+@login_required
+def eliminar_todas_notificaciones(request):
+    notificaciones = request.user.perfil.notificaciones.all()
+    notificaciones.delete()
+    return redirect('notificaciones')

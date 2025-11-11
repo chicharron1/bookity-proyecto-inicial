@@ -259,3 +259,37 @@ img {
     margin-left: 0px;
     margin: 0px;
 }
+
+.mapa_detalle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.ordenar_perfil1 {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 50px;
+    width: 100%;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.ordenar_perfil2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 50px;
+  width: 100%;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.item {
+  background: #adc178;
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+  border-radius: 10px;
+  height:auto;
+}

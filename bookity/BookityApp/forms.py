@@ -10,7 +10,7 @@ class PublicacionForm(forms.ModelForm):
         widgets = {
             'descripcion': forms.Textarea(
                 attrs={
-                    'style': 'resize: none;'
+                    'style': 'resize: vertical; height: 25px;''border-radius: 5px;''border: 1px solid #ccc;' 'margin-right:30px;',
                 },
             ),
             'latitud': forms.HiddenInput(),

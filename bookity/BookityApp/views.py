@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login as auth_login
 from .forms import PublicacionForm, PerfilForm, ComentarioForm, CalificacionForm
-from .models import Publicacion, Perfil, Comentario
+from .models import Publicacion, Perfil, Comentario, Notificacion
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Avg
 
@@ -231,6 +231,7 @@ def calificar_usuario(request, publicacion_id):
                 request.user.perfil.puntaje_usuario += 10
                 request.user.perfil.save()
                 request.user.perfil.actualizar_nivel()
+            Notificacion.objects.create(perfil=autor.perfil, mensaje=f"{request.user.username} calificó tu publicación.", otro_perfil=request.user.perfil)
             return redirect('detalle', publicacion_id=publicacion.id)
     else:
         form = CalificacionForm()
@@ -261,6 +262,7 @@ def eliminar_calificacion(request, publicacion_id):
             request.user.perfil.puntaje_usuario -= 10
             request.user.perfil.save()
             request.user.perfil.actualizar_nivel()
+        Notificacion.objects.create(perfil=autor.perfil, mensaje=f"{request.user.username} quitó la calificación a tu publicación.", otro_perfil=request.user.perfil)
         return redirect('detalle', publicacion_id=publicacion.id)
 
 def actualizar_promedio_calificaciones(user):
@@ -282,6 +284,7 @@ def usuarios_perfil(request, username):
 
         if accion == "seguir":
             usuario_logeado.perfil.seguir_usuario(perfil)
+            Notificacion.objects.create(perfil=perfil, mensaje=f"{usuario_logeado.username} Te está siguiendo.", otro_perfil=usuario_logeado.perfil)
         elif accion == "dejar_de_seguir":
             usuario_logeado.perfil.dejar_de_seguir_usuario(perfil)
 

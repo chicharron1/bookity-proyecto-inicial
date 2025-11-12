@@ -2,16 +2,21 @@
 {% load static %}
 
 {% block content %}
-<h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;">Publicar Anuncio</h1>
+
+<h1 style="text-align: left; font-family: 'Sour Gummy', sans-serif;">Publicar Anuncio</h1>
 <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <div class="mb-3">
-      <span id="radio_valor">{{ form.instance.radio_marcador|default:500 }}</span>
+  <div class="div-publicar-izq" style="align-self: left;"></div>
+      {% csrf_token %}
+      {{ form }}
+  </div>
+  <div class="div-publicar-der">
+      <div class="mb-3">
+      <span id="radio_valor">{{ form.instance.radio_marcador|default:500 }}</span>m
       <p>Radio de entrega. Esta ubicación es referencial, por favor no revele información delicada.</p>
     </div>
     <div id="map" style="height: 400px;"></div>
     <button style="margin-top:25px;"type="submit">Publicar</button>
+  </div>
 </form>
 
 <script>

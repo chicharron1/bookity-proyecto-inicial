@@ -131,6 +131,7 @@ def detalle(request, publicacion_id):
             comentario.user.perfil.puntaje_usuario += 5
             comentario.user.perfil.actualizar_nivel()
             comentario.save()
+            Notificacion.objects.create(perfil=publicacion.user.perfil, mensaje=f"{otro_perfil.username} Comentó tu publicación.", otro_perfil=request.user.perfil)
             return redirect('detalle', publicacion_id=publicacion.id)
     else:
         comentario_form = ComentarioForm()

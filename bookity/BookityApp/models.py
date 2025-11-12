@@ -63,3 +63,12 @@ class Perfil(models.Model):
         else:
             self.nivel_usuario = 'Nuevo'
         self.save()
+
+class Notificacion(models.Model):
+    perfil = models.ForeignKey('Perfil', on_delete=models.CASCADE, related_name='notificaciones')
+    mensaje = models.TextField()
+    fecha = models.DateTimeField(auto_now_add=True)
+    otro_perfil = models.ForeignKey('Perfil', on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return f"Notificación para {self.perfil.user.username}: {self.mensaje[:40]}"

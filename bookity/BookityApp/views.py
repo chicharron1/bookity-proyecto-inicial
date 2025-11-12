@@ -311,3 +311,6 @@ def eliminar_todas_notificaciones(request):
     notificaciones = request.user.perfil.notificaciones.all()
     notificaciones.delete()
     return redirect('notificaciones')
+
+def sobre_nosotros(request):
+    return render(request, 'BookityApp/sobre_nosotros.html')

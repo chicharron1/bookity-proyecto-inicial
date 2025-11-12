@@ -5,7 +5,9 @@
 <div class="ordenar_perfil1">
 <p class="item"><strong>Nivel:</strong> {{ perfil.nivel_usuario }}</p>
 <p class="item"><strong>Puntaje:</strong> {{ perfil.puntaje_usuario }}</p>
-    <div class="item">
+</div>    
+<div class="ordenar_perfil2">
+        <div class="item">
     <p><strong>Calificación Promedio:</strong></p>
     {% if perfil.promedio_calificaciones %}
         {{ perfil.promedio_calificaciones|floatformat:2 }}
@@ -13,8 +15,6 @@
         Sin calificaciones aún
     {% endif %}
     </div>
-</div>    
-<div class="ordenar_perfil2">
     <div class="item">
     <p><strong>Usuarios Seguidos:</strong></p>
     {% if usuarios_seguidos %}
@@ -28,27 +28,28 @@
     {% endif %}
     </div>
 </div>
-<a href="{% url 'editar_perfil' %}">Editar Perfil</a>
+<a href="{% url 'editar_perfil' %}" class="boton_edit_perfil">Editar Perfil</a>
 
-<div class="contenedor-publicaciones">
-    <h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;">Mis Publicaciones</h1>
-    {% if publicaciones %}
+<h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;font-size:50px;">Mis Publicaciones</h1>
+{% if publicaciones %}
+    <div class="contenedor-publicaciones">
         {% for publicacion in publicaciones %}
             <div class="publicacion">
-                <h2 style="text-align: center; font-family: 'inder', sans-serif;">{{ publicacion.titulo }}</h2>
-                <p style="text-align: center; font-family: 'inder', sans-serif;">{{ publicacion.descripcion }}</p>
-                <p style="text-align: center; font-family: 'inder', sans-serif;"><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
-                <div style="text-align: center;">
-                    <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
+                <h2>{{ publicacion.titulo }}</h2>
+                <p>{{ publicacion.descripcion }}</p>
+                <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
+                <div>
+                    <a href="{% url 'detalle' publicacion.id %}" style="text-decoration: none;color: black;font-weight: bold;">Ver más información</a>
                 </div>
                 <form method="post" action="{% url 'eliminar_publicacion' publicacion.id %}">
                     {% csrf_token %}
-                    <button style="margin-top:-250px"type="submit" >Eliminar Publicación</button>
+                    <button type="submit">Eliminar Publicación</button>
                 </form>
             </div>
         {% endfor %}
-    {% else %}
-        <p>No has realizado ninguna publicación todavía.</p>
-    {% endif %}
-</div>
+    </div>
+{% else %}
+    <p class="mensaje_sin_pub">No has realizado ninguna publicación todavía.</p>
+{% endif %}
+
 {% endblock %}

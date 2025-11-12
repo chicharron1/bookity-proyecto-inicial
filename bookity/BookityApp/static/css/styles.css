@@ -191,8 +191,13 @@ button:hover,
 }
 
 .contenedor-publicaciones {
-  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px; /* 🔹 increase spacing between cards */
+  justify-items: start;
+  padding: 40px;
 }
+
 
 .contenedor-mapa {
   flex: 2;
@@ -209,10 +214,14 @@ button:hover,
   margin-right: 150px;
 }
 
-/* Estilos para cada publicación */
+
 .publicacion {
-  border-bottom: 1px solid #ddd;
-  padding: 20px 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .publicacion_detalle {
@@ -274,6 +283,8 @@ img {
     width: 100%;
     align-items: center;
     box-sizing: border-box;
+    margin-left:375px;
+    font-family: 'inder',sans-serif;
 }
 
 .ordenar_perfil2 {
@@ -283,6 +294,8 @@ img {
   width: 100%;
   align-items: center;
   box-sizing: border-box;
+  margin-left: 375px;
+  font-family: 'inder',sans-serif;
 }
 
 .item {
@@ -292,4 +305,25 @@ img {
   text-align: center;
   border-radius: 10px;
   height:auto;
+}
+.boton_edit_perfil {
+  color:black;
+  text-decoration: none;
+  font-family: 'Inder', sans-serif;
+  display: block;
+  text-align: center;
+  margin-top:20px;
+  width:100px;
+  length:100px;
+  margin-left:675px;
+}
+
+.mensaje_sin_publicaciones{
+    text-align: center;
+    font-family: 'Inder', sans-serif;
+    font-size: 20px;
+    margin-top: 20px;
+}
+.boton_info{
+  text-decoration: none;
 }

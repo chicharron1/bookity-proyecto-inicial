@@ -2,17 +2,20 @@
 
 {% block content %}
 <h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;font-size:50px;padding-top: 50px;">Perfil de {{ usuario.username }}</h1>
-<div class="perfil_usuario">
-    <p><strong>Usuario:</strong> {{ usuario.username }}</p>
-    <p><strong>Nivel:</strong> {{ perfil.nivel_usuario }}</p>
-    <p><strong>Puntaje:</strong> {{ perfil.puntaje_usuario }}</p>
-    <p><strong>Calificación Promedio:</strong> 
-        {% if perfil.promedio_calificaciones %}
-            {{ perfil.promedio_calificaciones|floatformat:2 }}
-        {% else %}
-            Sin calificaciones aún
-        {% endif %}
+<p><strong>Usuario:</strong> {{ usuario.username }}</p>
+<div class="ordenar_perfil_otro">
+    <p class="item2"><strong>Nivel:</strong> {{ perfil.nivel_usuario }}</p>
+    <p class="item2"><strong>Puntaje:</strong> {{ perfil.puntaje_usuario }}</p>
+    
+<div class="ordenar_perfil_otro">
+    <p class="item2"><strong>Calificación Promedio:</strong>
+    {% if perfil.promedio_calificaciones %}
+        {{ perfil.promedio_calificaciones|floatformat:2 }}
+    {% else %}
+        Sin calificaciones aún
+    {% endif %}
     </p>
+</div>
     {% if usuario != request.user %}
         <form method="post">
             {% csrf_token %}
@@ -24,26 +27,27 @@
         </form>
     {% endif %}
 </div>
-
-<div class="publicaciones_perfil">
-    <h2 style="text-align: center; font-family: 'inder', sans-serif;">Publicaciones Disponibles</h2>
-    {% if publicaciones_disponibles %}
-        <div class="scroll-box">
-            {% for publicacion in publicaciones_disponibles %}
-                <div class="publicacion">
-                    <h3>{{ publicacion.titulo }}</h3>
-                    <p>{{ publicacion.descripcion|truncatechars:50 }}</p>
-                    <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
-                    <div>
-                        <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
-                    </div>
+<h2 style="text-align: center; font-family: 'inder', sans-serif;">Publicaciones Disponibles</h2>
+{% if publicaciones %}
+    <div class="contenedor-publicaciones2">
+        {% for publicacion in publicaciones %}
+            <div class="publicacion">
+                <h2>{{ publicacion.titulo }}</h2>
+                <p>{{ publicacion.descripcion }}</p>
+                <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
+                <div>
+                    <a href="{% url 'detalle' publicacion.id %}" style="text-decoration: none;color: black;font-weight: bold;">Ver más información</a>
                 </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <p>No hay publicaciones disponibles.</p>
-    {% endif %}
-
+                <form method="post" action="{% url 'eliminar_publicacion' publicacion.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Eliminar Publicación</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="mensaje_sin_pub">No hay publicaciones disponibles</p>
+{% endif %}
     <h2 style="text-align: center; font-family: 'inder', sans-serif; margin-top: 40px;">Publicaciones Cerradas</h2>
     {% if publicaciones_cerradas %}
         <div class="scroll-box">
@@ -64,5 +68,4 @@
     {% else %}
         <p>No hay publicaciones cerradas.</p>
     {% endif %}
-</div>
 {% endblock %}

@@ -6,7 +6,7 @@
 <p class="item"><strong>Nivel:</strong> {{ perfil.nivel_usuario }}</p>
 <p class="item"><strong>Puntaje:</strong> {{ perfil.puntaje_usuario }}</p>
 </div>    
-<div class="ordenar_perfil2">
+<div class="ordenar_perfil1">
         <div class="item">
     <p><strong>Calificación Promedio:</strong></p>
     {% if perfil.promedio_calificaciones %}
@@ -15,6 +15,7 @@
         Sin calificaciones aún
     {% endif %}
     </div>
+    
     <div class="item">
     <p><strong>Usuarios Seguidos:</strong></p>
     {% if usuarios_seguidos %}
@@ -32,7 +33,7 @@
 
 <h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;font-size:50px;">Mis Publicaciones</h1>
 {% if publicaciones %}
-    <div class="contenedor-publicaciones">
+    <div class="contenedor-publicaciones2">
         {% for publicacion in publicaciones %}
             <div class="publicacion">
                 <h2>{{ publicacion.titulo }}</h2>

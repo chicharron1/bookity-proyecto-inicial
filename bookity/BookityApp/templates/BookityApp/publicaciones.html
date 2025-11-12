@@ -7,15 +7,16 @@
 {% endblock %}
 
 {% block content %}
-<div class="contenedor_busqueda" style="height: 250px;">
+<div class="contenedor_busqueda" style="height: 250px;margin-top: 25px;">
   <form method="get" action="{% url 'publicaciones' %}" style="margin-top:0px;">
       <input type="text" name="q" placeholder="Buscar publicaciones..." value="{{ request.GET.q }}" style="width: 1400px;">
-      <select name="tipo_filtro" style="margin-top:25px;">
-          <option value="">Todos los tipos</option>
-          <option value="Intercambios">Intercambios</option>
-          <option value="Donaciones">Donaciones</option>
+      <select name="tipo_filtro" class="caja-seleccion">
+        <option value="">Todos los tipos</option>
+        <option value="Intercambios">Intercambios</option>
+        <option value="Donaciones">Donaciones</option>
       </select>
-      <label style="align-self:center;">
+      
+      <label style="align-self:center;font-family: 'inder' ,sans-serif;margin-top: 20px;">
         <input type="checkbox" name="filtro-seguidos" value="1" {% if request.GET.solo_seguidos %}checked{% endif %}>
         Solo usuarios que sigo
       </label>
@@ -23,14 +24,12 @@
   </form>
 </div>
 
-<!-- Contenedor para ambos títulos en la misma línea -->
 <div class="contenedor-titulos">
-  <h1 class="titulo-seccion" style="margin-right: 0px;">Publicaciones</h1>
-  <h1 class="titulo-seccion" style="margin-right: 0px;">Mapa de publicaciones</h1>
+  <h1 class="titulo-seccion" style="margin-right: 0px;margin-left:25px;">Publicaciones</h1>
+  <h1 class="titulo-seccion" style="margin-right: 100px;">Mapa de publicaciones</h1>
 </div>
 
 <div class="contenedor-principal">
-  <!-- Columna de publicaciones -->
   <div class="contenedor-publicaciones">
     {% if publicaciones %}
       <div class="scroll-box">
@@ -55,7 +54,6 @@
     {% endif %}
   </div>
   
-  <!-- Columna del mapa -->
   <div class="contenedor-mapa">
     <div id="map"></div>
   </div>

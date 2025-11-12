@@ -6,9 +6,9 @@
 <div class="ordenar_perfil_otro">
     <p class="item2"><strong>Nivel:</strong> {{ perfil.nivel_usuario }}</p>
     <p class="item2"><strong>Puntaje:</strong> {{ perfil.puntaje_usuario }}</p>
-    
-<div class="ordenar_perfil_otro">
-    <p class="item2"><strong>Calificación Promedio:</strong>
+</div>
+<div class="ordenar_perfil_otro2">
+    <p class="texto_ind"><strong>Calificación Promedio:</strong>
     {% if perfil.promedio_calificaciones %}
         {{ perfil.promedio_calificaciones|floatformat:2 }}
     {% else %}
@@ -28,29 +28,27 @@
     {% endif %}
 </div>
 <h2 style="text-align: center; font-family: 'inder', sans-serif;">Publicaciones Disponibles</h2>
-{% if publicaciones %}
-    <div class="contenedor-publicaciones2">
-        {% for publicacion in publicaciones %}
-            <div class="publicacion">
-                <h2>{{ publicacion.titulo }}</h2>
-                <p>{{ publicacion.descripcion }}</p>
-                <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
-                <div>
-                    <a href="{% url 'detalle' publicacion.id %}" style="text-decoration: none;color: black;font-weight: bold;">Ver más información</a>
+<div class="contenedor-publicaciones1">
+    {% if publicaciones_disponibles %}
+        <div>
+            {% for publicacion in publicaciones_disponibles %}
+                <div class="publicacion">
+                    <h3>{{ publicacion.titulo }}</h3>
+                    <p>{{ publicacion.descripcion|truncatechars:50 }}</p>
+                    <p><em>Publicado el {{ publicacion.fecha_publicacion|date:"d/m/Y H:i" }}</em></p>
+                    <div>
+                        <a href="{% url 'detalle' publicacion.id %}">Ver más información</a>
+                    </div>
                 </div>
-                <form method="post" action="{% url 'eliminar_publicacion' publicacion.id %}">
-                    {% csrf_token %}
-                    <button type="submit">Eliminar Publicación</button>
-                </form>
-            </div>
-        {% endfor %}
-    </div>
-{% else %}
-    <p class="mensaje_sin_pub">No hay publicaciones disponibles</p>
-{% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No hay publicaciones disponibles.</p>
+    {% endif %}
+</div>
     <h2 style="text-align: center; font-family: 'inder', sans-serif; margin-top: 40px;">Publicaciones Cerradas</h2>
     {% if publicaciones_cerradas %}
-        <div class="scroll-box">
+        <div>
             {% for publicacion in publicaciones_cerradas %}
                 <div class="publicacion">
                     <h3>{{ publicacion.titulo }}</h3>

@@ -182,6 +182,7 @@ button:hover,
   grid-template-columns: 1fr 1fr;
   justify-items: space-between;
   margin-bottom: 20px;
+  margin-top: -50px;
 }
 
 .contenedor-principal {
@@ -190,7 +191,22 @@ button:hover,
   margin-top: 0px;
 }
 
+.contenedor-publicaciones2 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px; /* 🔹 increase spacing between cards */
+  justify-items: start;
+  padding: 40px;
+}
 .contenedor-publicaciones {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0px; /* 🔹 increase spacing between cards */
+  justify-items: start;
+  padding: 0px;
+}
+
+.div-notificaciones {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 40px; /* 🔹 increase spacing between cards */
@@ -198,6 +214,11 @@ button:hover,
   padding: 40px;
 }
 
+.div-notificacion{
+  display: flex;
+  align-items: center;
+  gap: 100px;
+}
 
 .contenedor-mapa {
   flex: 2;
@@ -205,19 +226,19 @@ button:hover,
 
 /* Caja de scroll para publicaciones */
 .scroll-box {
-  height: 250px;
+  height: 300px;
   width: 350px;
   overflow-y: auto; 
-  border: 2px solid #ccc;
+  border: 2px transparent;
   padding: 15px;
-  background-color: #f9f9f9;
-  margin-right: 150px;
+  background-color:transparent;
+  margin-right: 100px;
 }
 
 
 .publicacion {
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: transparent;
+  border: transparent;
   border-radius: 20px;
   padding: 30px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -231,8 +252,9 @@ button:hover,
 
 /* Mapa */
 #map {
-  height: 300px;
+  height: 350px;
   width: 900px;
+  margin-right:50px;
 }
 
 /* Títulos */
@@ -244,9 +266,6 @@ button:hover,
 .publicacion {
     margin-bottom:0px;
     margin-top:0px;
-}
-.contenedor-publicaciones {
- margin-bottom: 0px; 
 }
 
 img {
@@ -266,7 +285,7 @@ img {
     cursor: pointer;
     transition: background 0.3s;
     margin-left: 0px;
-    margin: 0px;
+    margin-top: 10px;
 }
 
 .mapa_detalle {
@@ -326,4 +345,35 @@ img {
 }
 .boton_info{
   text-decoration: none;
+}
+.caja-seleccion {
+    width: 150px;
+    height:40px;
+    padding: 10px;
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 13px;
+    box-sizing: border-box;
+    margin-left: 10px;
+}
+
+.ordenar_perfil_otro{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 50px;
+  width: 100%;
+  align-items: center;
+  box-sizing: border-box;
+  margin-left:375px;
+  font-family: 'inder',sans-serif;
+}
+
+.item2{
+  background: #adc178;
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+  border-radius: 10px;
+  height:auto;
 }

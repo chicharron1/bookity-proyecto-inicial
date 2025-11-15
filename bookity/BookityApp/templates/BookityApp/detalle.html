@@ -5,63 +5,53 @@
 {% endblock %}
 {% block content %}
 <div>
-    <div class="publicacion_detalle">
-        <h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;font-size:50px;padding-top: 50px;">{{ publicacion.titulo }}</h1>
-        {% if publicacion.user == user %}
-            <form method="post" action="{% url 'eliminar_publicacion' publicacion.id %}">
-                {% csrf_token %}
-                <button style="margin-top:-300px;"type="submit">Eliminar Publicación</button>
-            </form>
-        {% endif %}
-        <div style="text-align: center; font-family: 'inder', sans-serif; font-size:20px;">
-            <p>{{ publicacion.descripcion }}</p>
-            <p><strong>Contacto:</strong> {{ publicacion.contacto }}</p>
-            <p><strong>Tipo:</strong> {{ publicacion.tipo }}</p>
-            <p><strong>Ubicación:</strong> {{ publicacion.ubicacion }}</p>
-            <p><strong>Fecha de publicación:</strong> {{ publicacion.fecha_publicacion }}</p>
-        </div>
+    <div class="conjunto">
 
-        {% if user == publicacion.trato_cerrado_con %}
-            {% if publicacion.calificacion %}
-                <p><strong>Calificación:</strong> {{ publicacion.calificacion }}</p>
-                <form method="post" action="{% url 'eliminar_calificacion' publicacion.id %}">
+        <div class="publicacion_detalle">
+            <h1 style="text-align: left; font-family: 'Sour Gummy', sans-serif;font-size:50px;padding-top: 0px;margin:0px;margin-left:500px;">{{ publicacion.titulo }}</h1>
+            {% if publicacion.user == user %}
+                <form method="post" action="{% url 'eliminar_publicacion' publicacion.id %}">
                     {% csrf_token %}
-                    <button type="submit">Eliminar Calificación</button>
+                    <button style="margin-top:0pxx;"type="submit">Eliminar Publicación</button>
                 </form>
             {% endif %}
-            <form method="post" action="{% url 'calificar_usuario' publicacion.id %}">
-                {% csrf_token %}
-                <input type="number" id="calificacion" name="calificacion" min="1" max="5" required>
-                <button type="submit">
-                    {% if publicacion.calificacion %}Actualizar Calificación{% else %}Calificar{% endif %}
-                </button>
-            </form>
-        {% endif %}
-    </div>
-
-    <div class="mapa_detalle">
-        <h2 style="text-align: center; font-family: 'inder', sans-serif;">Rango de entrega</h2>
-        <div id="map" style="height: 400px; margin-top: 20px; width:400px; display: grid; align-items: center;"></div>
-    </div>
-
-    <div class="sobre_autor_seccion">
-        <h2 style="text-align: center; font-family: 'inder', sans-serif;">Sobre el Autor</h2>
-        <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Usuario:</strong> </p> <a  href="{% url 'usuarios_perfil' publicacion.user.username %}">{{ publicacion.user.username }}</a>
-        <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Nivel:</strong> {{ publicacion.user.perfil.nivel_usuario }}</p>
-        <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Puntaje:</strong> {{ publicacion.user.perfil.puntaje_usuario }}</p>
-        <p style="text-align: center; font-family: 'inder', sans-serif;"><strong>Calificación Promedio:</strong> 
-            {% if publicacion.user.perfil.promedio_calificaciones %}
-                {{ publicacion.user.perfil.promedio_calificaciones|floatformat:2 }}
-            {% else %}
-                Sin calificaciones aún
+            <div style="text-align:center; font-family: 'inder', sans-serif; font-size:20px;">
+                <p><strong>Usuario:</strong> <a  href="{% url 'usuarios_perfil' publicacion.user.username %}">{{ publicacion.user.username }}</a> </p>
+                <p>{{ publicacion.descripcion }}</p>
+                <p><strong>Contacto:</strong> {{ publicacion.contacto }}</p>
+                <p><strong>Tipo:</strong> {{ publicacion.tipo }}</p>
+                <p><strong>Ubicación:</strong> {{ publicacion.ubicacion }}</p>
+                <p><strong>Fecha de publicación:</strong></p>
+                <p> {{ publicacion.fecha_publicacion }}</p>
+            </div>
+    
+            {% if user == publicacion.trato_cerrado_con %}
+                {% if publicacion.calificacion %}
+                    <p><strong>Calificación:</strong> {{ publicacion.calificacion }}</p>
+                    <form method="post" action="{% url 'eliminar_calificacion' publicacion.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Eliminar Calificación</button>
+                    </form>
+                {% endif %}
+                <form method="post" action="{% url 'calificar_usuario' publicacion.id %}">
+                    {% csrf_token %}
+                    <input type="number" id="calificacion" name="calificacion" min="1" max="5" required>
+                    <button type="submit">
+                        {% if publicacion.calificacion %}Actualizar Calificación{% else %}Calificar{% endif %}
+                    </button>
+                </form>
             {% endif %}
-        </p>
+        </div>
+    
+        <div class="mapa_detalle">
+            <h2 style="text-align: center; font-family: 'inder', sans-serif;margin-right:300px">Rango de entrega</h2>
+            <div id="map" style="height: 400px; margin-top: 20px; width:600px;margin-right:300px;"></div>
+        </div>
+    
     </div>
-
-    <div class="comentarios_seccion">
-        <h2 style="text-align: center; font-family: 'inder', sans-serif;">Comentarios</h2>
-
-        {% if user != publicacion.user and ya_comento == False %}
+    
+<h2 style="text-align: center; font-family: 'inder', sans-serif;">Comentarios</h2>
+{% if user != publicacion.user and ya_comento == False %}
         {% if ya_comento %}
             <p>Ya has comentado en esta publicación.</p>
         {% endif %}
@@ -71,10 +61,12 @@
         <form method="post">
             {% csrf_token %}
             {{ comentario_form.as_p }}
-            <button type="submit">Agregar Comentario</button>
+            <button type="submit" style="margin-bottom:50px;">Agregar Comentario</button>
         </form>
         {% endif %}
         {% endif %}
+    <div class="comentarios_seccion">
+        
         {% if publicacion.comentarios.all %}
             {% if publicacion.user == user and publicacion.estado == 'Cerrado' %}
                 <form method="post" action="{% url 'cancelar_trato' publicacion.id %}">

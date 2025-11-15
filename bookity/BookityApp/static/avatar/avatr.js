@@ -81,7 +81,7 @@ const partsCatalog = {
     ],
 
   
-    pelotraseras: [
+    peloatras: [
         'avatar/images/pelotras1.png',
         'avatar/images/pelotras2.png',
         'avatar/images/pelotras3.png',
@@ -99,15 +99,69 @@ const partsCatalog = {
         'avatar/images/pelonuca4.png'
     ],
 
-       
      back: [
         'avatar/images/back1.png',
-   
     ],
     
      back2: [
         'avatar/images/back2.png',
         'avatar/images/back21.png',
-       
      ] 
-};
+}
+
+const currentPartIndex = {
+    pelo: 0,
+    ojos: 0,
+    cuerpo: 0,
+    boca: 0,
+    cara: 0,
+    ropa: 0,
+    ceja: 0,
+    oreja: 0,
+    patilla: 0,
+    peloatras: 0,
+    pelonuca: 0,
+    back: 0,
+    back2: 0,
+}
+
+
+
+function changeLayer(partName, index) {
+    const relativePath = partsCatalog[partName][index];
+    const layerElement = document.getElementById(`layer-${partName}`);
+    
+    if (layerElement && relativePath) {
+        // Asume que tu ruta estática es /static/ y la concatena.
+        layerElement.src = `/static/${relativePath}`; 
+    }
+}
+
+function navigatePart(partName, direction) {
+    const catalog = partsCatalog[partName];
+    if (!catalog) return;
+
+    const maxIndex = catalog.length - 1;
+    let currentIndex = currentPartIndex[partName];
+
+    let newIndex = currentIndex + direction;
+
+    if (newIndex > maxIndex) {
+        newIndex = 0; 
+    } else if (newIndex < 0) {
+        newIndex = maxIndex; 
+    }
+    
+    currentPartIndex[partName] = newIndex;
+    changeLayer(partName, newIndex);
+    
+    
+    const controlGroup = document.querySelector(`.control-group[data-part="${partName}"]`);
+    if (controlGroup) {
+        const displaySpan = controlGroup.querySelector('.current-index-display');
+        if (displaySpan) {
+             displaySpan.textContent = `${newIndex + 1} / ${catalog.length}`;
+        }
+    }
+}
+

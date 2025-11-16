@@ -2,30 +2,22 @@
 {% load static %}
 
 {% block content %}
-<h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;">Publicar Anuncio</h1>
 
-<div style="display: flex; justify-content: center; align-items: flex-start; gap: 40px; margin-top: 20px;">
-  
-  
-  <form method="post" style="text-align: left; width: 350px;">
+<h1 style="text-align: left; font-family: 'Sour Gummy', sans-serif;">Publicar Anuncio</h1>
+<form method="post">
+  <div class="div-publicar-izq" style="align-self: left;"></div>
       {% csrf_token %}
-      {{ form.as_p }}
+      {{ form }}
+  </div>
+  <div class="div-publicar-der">
       <div class="mb-3">
-        <span id="radio_valor">{{ form.instance.radio_marcador|default:500 }}</span>
-        <p style="font-size: 0.9em;">Radio de entrega. Esta ubicación es referencial, por favor no revele información delicada.</p>
-      </div>
-      <button type="submit" style="margin-top: 25px; background-color: #b6d27b; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer;">
-        Publicar
-      </button>
-  </form>
-
-
-  <div id="map" style="height: 500px; width: 700px; border-radius: 10px; overflow: hidden;"></div>
-
-</div>
-
-
-
+      <span id="radio_valor">{{ form.instance.radio_marcador|default:500 }}</span>m
+      <p>Radio de entrega. Esta ubicación es referencial, por favor no revele información delicada.</p>
+    </div>
+    <div id="map" style="height: 400px;"></div>
+    <button style="margin-top:25px;"type="submit">Publicar</button>
+  </div>
+</form>
 
 <script>
     const latitud_defecto = {{ user.perfil.latitud_defecto|default:"null" }};

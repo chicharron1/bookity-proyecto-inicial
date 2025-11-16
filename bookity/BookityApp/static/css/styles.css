@@ -212,6 +212,19 @@ button:hover,
   padding: 20px;
 }
 
+.div-notificaciones {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px; /* 🔹 increase spacing between cards */
+  justify-items: start;
+  padding: 40px;
+}
+
+.div-notificacion{
+  display: flex;
+  align-items: center;
+  gap: 100px;
+}
 
 .contenedor-mapa {
   flex: 2;

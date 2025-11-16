@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import inicio, login, registro, cerrar, publicar, publicaciones, perfil, detalle, eliminar_comentario, eliminar_publicacion, cerrar_trato, cancelar_trato, editar_perfil, eliminar_cuenta, calificar_usuario, eliminar_calificacion, usuarios_perfil, notificaciones, eliminar_notificacion, eliminar_todas_notificaciones, sobre_nosotros
+from .views import inicio, login, registro, cerrar, publicar, publicaciones, perfil, detalle, eliminar_comentario, eliminar_publicacion, cerrar_trato, cancelar_trato, editar_perfil, eliminar_cuenta, calificar_usuario, eliminar_calificacion, usuarios_perfil, notificaciones, eliminar_notificacion, eliminar_todas_notificaciones, sobre_nosotros, gachalife, guardar_avatar
 
 urlpatterns = [
     path('', inicio, name='inicio'),
@@ -24,4 +24,6 @@ urlpatterns = [
     path('notificaciones/eliminar/<int:id>/', eliminar_notificacion, name='eliminar_notificacion'),
     path('notificaciones/eliminar_todas/', eliminar_todas_notificaciones, name='eliminar_todas_notificaciones'),
     path('sobre_nosotros', sobre_nosotros, name='sobre_nosotros'),
+    path('gachalife/', gachalife, name='gachalife'),
+    path('gachalife/guardar/', guardar_avatar, name='guardar_avatar'),
 ]

@@ -1,0 +1,70 @@
+{% extends 'BookityApp/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="gacha-wrapper">
+
+    <div id="avatar-container">
+        {% comment %} BACK {% endcomment %}
+        {% for i in range_cant.back %}
+            <img class="avatar-layer" data-layer="back"
+                 src="{% static 'avatar/images/back' %}{{ i }}.png"
+                 style="display:{% if forloop.first %}block{% else %}none{% endif %}">
+        {% endfor %}
+
+        {% comment %} CUERPO {% endcomment %}
+        <img class="avatar-layer" data-layer="cuerpo" src="{% static 'avatar/images/cuerpo1.png' %}">
+
+        {% comment %} CAPAS GENERADAS {% endcomment %}
+        {% for part, nums in range_cant.items %}
+            {% if part not in "back cuerpo" %}
+                {% if part in "cara ceja boca patilla oreja chasquilla peloatras pelonuca chaqueta tatu" %}
+                    <img class="avatar-layer" data-layer="{{ part }}" src=""
+                         style="display:block; width:0; height:0;">
+                {% endif %}
+
+                {% for i in nums %}
+                    <img class="avatar-layer" data-layer="{{ part }}"
+                         src="{% static 'avatar/images/' %}{{ part }}{{ i }}.png"
+                         style="display:none">
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div id="controls-panel">
+        {% for part, nums in range_cant.items %}
+            <h3>{{ part }}</h3>
+            <div class="control-group" data-part="{{ part }}">
+                <button class="nav-btn" data-direction="-1">&lt;</button>
+                {% if part in "cara ceja boca patilla oreja chasquilla peloatras pelonuca chaqueta tatu" %}
+                    {% with total=nums|length|add:"1" %}
+                        <span class="current-index-display">1 / {{ total }}</span>
+                    {% endwith %}
+                {% else %}
+                    <span class="current-index-display">1 / {{ nums|length }}</span>
+                {% endif %}
+                <button class="nav-btn" data-direction="1">&gt;</button>
+            </div>
+            <hr>
+        {% endfor %}
+
+    </div>
+{% if user.is_authenticated and user.perfil.nivel_usuario == 'Medio' %}
+    <div style="text-align: center;">
+        <button id="guardar-avatar" style="margin-top:15px; padding:8px 15px; font-size:16px; background:#adc178; color:white; border:none; border-radius:6px; cursor:pointer;">Guardar avatar</button>
+    </div>
+{% else %}
+    <div style="text-align: center; position: absolute; bottom: 10px;">
+        <h3>¡Regístrate o alcanza Nivel Medio para guardar tu avatar!</h3>
+        <p>Cierra tratos, publica e interactúa con otros usuarios para ganar puntos y subir de nivel</p>
+    </div>
+{% endif %}
+<link rel="stylesheet" href="{% static 'css/gacha.css' %}">
+<script>
+    const cantidades = {{ cantidades|safe }};
+    const avatarConfig = {{ avatar_config|default:"{}"|safe }};
+</script>
+<script src="{% static 'js/gacha.js' %}"></script>
+
+{% endblock %}

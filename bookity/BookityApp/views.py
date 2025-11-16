@@ -3,9 +3,12 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login as auth_login
 from .forms import PublicacionForm, PerfilForm, ComentarioForm, CalificacionForm
-from .models import Publicacion, Perfil, Comentario, Notificacion
+from .models import Publicacion, Perfil, Comentario, Notificacion, AvatarConfiguration
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Avg
+from django.http import JsonResponse
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 def registro(request):
     mensaje_error = ''
@@ -131,6 +134,7 @@ def detalle(request, publicacion_id):
             comentario.user.perfil.puntaje_usuario += 5
             comentario.user.perfil.actualizar_nivel()
             comentario.save()
+            Notificacion.objects.create(perfil=publicacion.user.perfil, mensaje=f"{otro_perfil.username} Comentó tu publicación.", otro_perfil=request.user.perfil)
             return redirect('detalle', publicacion_id=publicacion.id)
     else:
         comentario_form = ComentarioForm()
@@ -314,3 +318,60 @@ def eliminar_todas_notificaciones(request):
 
 def sobre_nosotros(request):
     return render(request, 'BookityApp/sobre_nosotros.html')
+
+@login_required
+def gachalife(request):
+    partes = [
+        "back", "cuerpo", "cara", "ojos", "ceja", "boca", "patilla",
+        "oreja", "chasquilla", "peloatras", "pelonuca",
+        "polera", "chaqueta", "tatu"
+    ]
+
+    cantidades = {
+        "cara": 5,
+        "ojos": 7,
+        "ceja": 4,
+        "boca": 8,
+        "patilla": 7,
+        "oreja": 5,
+        "chasquilla": 6,
+        "peloatras": 7,
+        "pelonuca": 5,
+        "polera": 4,
+        "chaqueta": 4,
+        "tatu": 3,
+        "back": 3,
+        "cuerpo": 1
+    }
+
+    range_cant = {part: range(1, count+1) for part, count in cantidades.items()}
+
+    # Intentar cargar configuración guardada del usuario
+    avatar_config = None
+    if request.user.is_authenticated:
+        avatar_config, created = AvatarConfiguration.objects.get_or_create(user=request.user)
+
+    return render(request, "BookityApp/gachalife.html", {
+        "cantidades": cantidades,
+        "range_cant": range_cant,
+        "partes": partes,
+        "avatar_config": avatar_config.as_dict() if avatar_config else {},
+    })
+
+@login_required
+@csrf_exempt
+def guardar_avatar(request):
+    if request.method == "POST":
+        # Verificar que el usuario tenga perfil y nivel_usuario == 'Medio'
+        if not hasattr(request.user, 'perfil') or request.user.perfil.nivel_usuario != 'Medio':
+            return JsonResponse({"status": "No tienes permiso para guardar el avatar"}, status=403)
+
+        data = json.loads(request.body)
+        avatar, created = AvatarConfiguration.objects.get_or_create(user=request.user)
+        for part, index in data.items():
+            if hasattr(avatar, part):
+                setattr(avatar, part, index)
+        avatar.save()
+        return JsonResponse({"status": "Avatar guardado correctamente"})
+    
+    return JsonResponse({"status": "Método no permitido"}, status=405)

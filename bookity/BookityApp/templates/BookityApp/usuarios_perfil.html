@@ -2,7 +2,6 @@
 
 {% block content %}
 <h1 style="text-align: center; font-family: 'Sour Gummy', sans-serif;font-size:50px;padding-top: 50px;">Perfil de {{ usuario.username }}</h1>
-<p><strong>Usuario:</strong> {{ usuario.username }}</p>
 <div class="ordenar_perfil_otro">
     <p class="item2"><strong>Nivel:</strong> {{ perfil.nivel_usuario }}</p>
     <p class="item2"><strong>Puntaje:</strong> {{ perfil.puntaje_usuario }}</p>
@@ -15,7 +14,6 @@
         Sin calificaciones aún
     {% endif %}
     </p>
-</div>
     {% if usuario != request.user %}
         <form method="post">
             {% csrf_token %}
@@ -66,4 +64,5 @@
     {% else %}
         <p>No hay publicaciones cerradas.</p>
     {% endif %}
+</div>
 {% endblock %}

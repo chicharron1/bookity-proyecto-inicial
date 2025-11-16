@@ -72,3 +72,29 @@ class Notificacion(models.Model):
 
     def __str__(self):
         return f"Notificación para {self.perfil.user.username}: {self.mensaje[:40]}"
+
+class AvatarConfiguration(models.Model):
+    user = user = models.OneToOneField('auth.User', on_delete=models.CASCADE)
+    cara = models.IntegerField(default=1)
+    ojos = models.IntegerField(default=1)
+    ceja = models.IntegerField(default=1)
+    boca = models.IntegerField(default=1)
+    patilla = models.IntegerField(default=1)
+    oreja = models.IntegerField(default=1)
+    chasquilla = models.IntegerField(default=1)
+    peloatras = models.IntegerField(default=1)
+    pelonuca = models.IntegerField(default=1)
+    polera = models.IntegerField(default=1)
+    chaqueta = models.IntegerField(default=1)
+    tatu = models.IntegerField(default=1)
+    back = models.IntegerField(default=1)
+    cuerpo = models.IntegerField(default=1)
+
+    def as_dict(self):
+        """Devuelve la configuración como diccionario"""
+        return {field.name: getattr(self, field.name)
+                for field in self._meta.fields
+                if field.name not in ['id', 'user']}
+
+    def __str__(self):
+        return f"Avatar de {self.user.username}"
